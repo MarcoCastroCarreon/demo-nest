@@ -10,13 +10,19 @@ export class TasksService {
             description: 'hi',
             done: true,
         },
+        {
+            id: 2,
+            title: 'cuak',
+            description: 'hi',
+            done: true,
+        },
     ];
 
     getTasks(): Task[] {
         return this.tasks;
     }
 
-    getTask(id): Task{
+    getTask(id: number): Task {
         return this.tasks.find(task => task.id === id);
     }
 }
