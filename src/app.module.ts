@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { TasksController } from './tasks/tasks.controller';
 import { TasksModule } from './tasks/tasks.module';
 import { TasksService } from './tasks/tasks.service';
-import { ConnectionModule } from './dao/config';
+import { ConnectionModule } from './common/config';
 
 @Module({
   imports: [TasksModule, ConnectionModule],

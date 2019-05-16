@@ -1,5 +1,8 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Task } from 'src/entities/task.entity';
+import { config } from 'dotenv';
+
+config();
 
 const host = process.env.DB_HOST;
 const port = +process.env.DB_PORT;

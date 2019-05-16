@@ -27,4 +27,15 @@ export class Task extends BaseEntity{
         type: 'boolean',
     })
     status: boolean;
+
+    static getTasks(){
+        return this.createQueryBuilder('task')
+            .getManyAndCount();
+    }
+
+    static getTask(taskId: number) {
+        return this.createQueryBuilder('task')
+            .where('task.id = :taskId',{taskId})
+            .getOne();
+    }
 }

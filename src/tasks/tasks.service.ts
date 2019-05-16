@@ -1,25 +1,35 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from 'src/entities/task.entity';
-import { Repository } from 'typeorm';
+import { Repository, getCustomRepository, getRepository } from 'typeorm';
+import { TaskRepository } from 'src/repositories/task.repository';
 
 @Injectable()
 export class TasksService {
     constructor(
         @InjectRepository(Task)
-        private readonly taskRepository: Repository<Task>
+        private  taskRepository: TaskRepository,
     ) {}
 
-    getTasks(): Promise<Task[]> {
-        return this.taskRepository.createQueryBuilder('Task')
-            .getMany();
+    async getTasks(): Promise<Task[]> {
+        const tasksList = await getCustomRepository(TaskRepository).getTasks();
+        return tasksList[0];
     }
 
-    getTask(id: number): Promise<Task> {
-        return this.taskRepository.findOne(id);
+    async getTask(id: number): Promise<Task> {
+        const task = await getCustomRepository(TaskRepository);
+        const taskGot = task.getTask(id);
+        return taskGot;
     }
 
-    createTask(task: Task): Promise<Task> {
-        return this.taskRepository.save(task);
+    async createTask(task: Task): Promise<{}> {
+        task.status = true;
+        const savedTask = await getCustomRepository(TaskRepository).saveTask(task);
+        return {
+            id: savedTask.id,
+            title: savedTask.title,
+            description: savedTask.description,
+            status: savedTask.status,
+        };
     }
 }
