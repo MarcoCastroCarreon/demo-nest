@@ -5,9 +5,10 @@ import { TasksController } from './tasks/tasks.controller';
 import { TasksModule } from './tasks/tasks.module';
 import { TasksService } from './tasks/tasks.service';
 import { ConnectionModule } from './common/config';
+import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [TasksModule, ConnectionModule],
+  imports: [TasksModule, ConnectionModule, UsersModule],
   controllers: [AppController, TasksController],
   providers: [AppService, TasksService],
 })

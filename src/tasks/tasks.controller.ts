@@ -1,28 +1,28 @@
-import { Controller, Get, Post, Body, Param, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, HttpCode, Logger } from '@nestjs/common';
 import { CreateTaskDTO } from './dto/create-task.dto';
 import { TasksService } from './tasks.service';
-import { Task } from './../entities/task.entity';
+import { TaskInterface } from './interface/task.inteface';
 
 @Controller('tasks')
 export class TasksController {
-
     constructor(private taskService: TasksService) {}
 
     @Get()
     @HttpCode(200)
-    getTasks(): Promise<Task[]> {
+    getTasks(): Promise<TaskInterface[]> {
         return this.taskService.getTasks();
     }
 
     @Get(':id')
     @HttpCode(200)
-    getIndividualTask(@Param('id') id: string): Promise<Task> {
+    getIndividualTask(@Param('id') id: string): Promise<TaskInterface> {
         return this.taskService.getTask(+id);
     }
 
     @Post()
     @HttpCode(201)
-    createTask(@Body() task: Task) {
-        return JSON.stringify(this.taskService.createTask(task));
+    createTask(@Body() task: CreateTaskDTO): Promise<TaskInterface> {
+        const savedTask = this.taskService.createTask(task);
+        return savedTask;
     }
 }

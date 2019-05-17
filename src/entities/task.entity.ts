@@ -2,10 +2,8 @@ import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
 
 @Entity()
 export class Task extends BaseEntity{
-    @Column({
+    @PrimaryGeneratedColumn({
         name: 'ID',
-        primary: true,
-        nullable: false,
         type: 'int',
     })
     id: number;
@@ -30,7 +28,7 @@ export class Task extends BaseEntity{
 
     static getTasks(){
         return this.createQueryBuilder('task')
-            .getManyAndCount();
+            .getMany();
     }
 
     static getTask(taskId: number) {
