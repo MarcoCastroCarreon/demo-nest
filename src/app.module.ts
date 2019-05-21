@@ -6,10 +6,14 @@ import { TasksModule } from './tasks/tasks.module';
 import { TasksService } from './tasks/tasks.service';
 import { ConnectionModule } from './common/config';
 import { UsersModule } from './users/users.module';
+import { UsersController } from './users/users.controller';
+import { UsersService } from './users/users.service';
+import { AuthService } from './common/auth/auth.service';
+import { AuthModule } from './common/auth/auth.module';
 
 @Module({
-  imports: [TasksModule, ConnectionModule, UsersModule],
-  controllers: [AppController, TasksController],
-  providers: [AppService, TasksService],
+  imports: [TasksModule, ConnectionModule, UsersModule, AuthModule],
+  controllers: [AppController, TasksController, UsersController],
+  providers: [AppService, TasksService, UsersService, AuthService],
 })
 export class AppModule {}
