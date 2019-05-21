@@ -20,7 +20,9 @@
 
 	<changeSet author="marco-castro" id="changelog-1.0.3">
 		<!-- Change set for Other Tables DDL -->
-		 <modifyDataType tableName="task" columnName="status" newDataType="tinyint(4)" />
+		 <sql>
+			ALTER TABLE task MODIFY status TINYINT;
+		 </sql>
     </changeSet>
 
 	<changeSet author="marco-castro" id="changelog-1.0.4">

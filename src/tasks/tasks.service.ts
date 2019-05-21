@@ -1,10 +1,10 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from 'src/entities/task.entity';
 import { Repository, getCustomRepository, getRepository } from 'typeorm';
 import { TaskRepository } from 'src/repositories/task.repository';
 import { TaskInterface } from './interface/task.inteface';
-import { CreateTaskDTO } from './dto/create-task.dto';
+import { TaskDTO } from './dto/task.dto';
 import { isBoolean } from 'util';
 
 @Injectable()
@@ -25,8 +25,9 @@ export class TasksService {
         return taskGot;
     }
 
-    async createTask(task: CreateTaskDTO): Promise<TaskInterface> {
-        if (!isBoolean(task.status)) { throw new HttpException({message: 'Status is boolean'}, HttpStatus.BAD_REQUEST); }
+    async createTask(task: TaskDTO): Promise<TaskInterface> {
+        if (!isBoolean(task.status))
+            throw new BadRequestException(); // HttpException({message: 'Status is boolean'}, HttpStatus.BAD_REQUEST); }
         const newTask = new Task();
         newTask.title = task.title;
         newTask.status = task.status;

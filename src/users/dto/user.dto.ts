@@ -1,6 +1,6 @@
-export class CreateUserDTO {
+export class UserDTO {
     name: string;
     email: string;
     password: string;
-    enabled: boolean;
+    status: string;
 }

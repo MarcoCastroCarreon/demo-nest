@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, BaseEntity, Column } from 'typeorm';
+import { UserStatus } from 'src/common/enums/user-status.enum';
 
 @Entity({name: 'USER'})
 export class User extends BaseEntity {
@@ -31,8 +32,9 @@ export class User extends BaseEntity {
 
     @Column({
         name: 'STATUS',
-        type: 'boolean',
+        type: 'enum',
+        enum: UserStatus,
     })
-    enabled: boolean;
+    status: UserStatus;
 
 }

@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Param, HttpCode, Logger } from '@nestjs/common';
-import { CreateTaskDTO } from './dto/create-task.dto';
+import { TaskDTO } from './dto/task.dto';
 import { TasksService } from './tasks.service';
 import { TaskInterface } from './interface/task.inteface';
 
@@ -21,7 +21,7 @@ export class TasksController {
 
     @Post()
     @HttpCode(201)
-    createTask(@Body() task: CreateTaskDTO): Promise<TaskInterface> {
+    createTask(@Body() task: TaskDTO): Promise<TaskInterface> {
         const savedTask = this.taskService.createTask(task);
         return savedTask;
     }
