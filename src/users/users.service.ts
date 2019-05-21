@@ -29,4 +29,27 @@ export class UsersService {
             status: savedUser.status,
         };
     }
+
+    async findById(id: number) {
+        const user = await this.userRepository.findById(id);
+        return user;
+    }
+
+    async findOneByToken(token: string) {
+        return await this.userRepository.findByToken(token);
+    }
+
+    async findAll(): Promise<UserInterface[]> {
+        const allUsers = await this.userRepository.findAll();
+
+        const all = allUsers.map(user => ({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            password: user.password,
+            status: user.status,
+            token: user.token ? user.token : null,
+        }))
+        return all;
+    }
 }

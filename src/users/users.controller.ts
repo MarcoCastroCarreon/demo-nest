@@ -9,8 +9,15 @@ export class UsersController {
 
     @Post()
     @HttpCode(201)
-    async create(@Body() user: UserDTO): Promise<UserInterface> {
+    create(@Body() user: UserDTO): Promise<UserInterface> {
         const savedUser = this.userService.create(user);
         return savedUser;
+    }
+
+    @Get()
+    @HttpCode(200)
+    getAll(): Promise<UserInterface[]> {
+        const users = this.userService.findAll();
+        return users;
     }
 }

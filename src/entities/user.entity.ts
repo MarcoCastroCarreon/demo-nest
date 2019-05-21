@@ -37,4 +37,27 @@ export class User extends BaseEntity {
     })
     status: UserStatus;
 
+    @Column({
+        name: 'TOKEN',
+        type: 'varchar',
+        nullable: true,
+    })
+    token: string;
+
+    static findOneById(id : number): Promise<User> {
+        return this.createQueryBuilder('user')
+            .where('user.id =: id', {id})
+            .getOne();
+    }
+
+    static findOneByToken(token: string): Promise<User> {
+        return this.createQueryBuilder('user')
+            .where('user.token = :token', {token})
+            .getOne();
+    }
+
+    static findAll(): Promise<User[]> {
+        return this.createQueryBuilder('user')
+            .getMany();
+    }
 }
