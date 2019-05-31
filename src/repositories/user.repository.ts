@@ -16,4 +16,12 @@ export class UserRepository extends Repository<User> {
     findAll(): Promise<User[]> {
         return User.findAll();
     }
+    saveUser(user: User): Promise<User> {
+        const savedUser = User.save(user);
+        return savedUser;
+    }
+    deleteUser(user: User): Promise<User> {
+        const deletedUser = User.remove(user);
+        return deletedUser;
+    }
 }

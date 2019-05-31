@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, BaseEntity, Column } from 'typeorm';
 import { UserStatus } from 'src/common/enums/user-status.enum';
+import { UserRoleEnum } from 'src/common/enums/user-role.enum';
 
 @Entity({name: 'USER'})
 export class User extends BaseEntity {
@@ -43,6 +44,13 @@ export class User extends BaseEntity {
         nullable: true,
     })
     token: string;
+
+    @Column({
+        name: 'ROLE',
+        type: 'enum',
+        enum: UserRoleEnum,
+    })
+    role: UserRoleEnum;
 
     static findOneById(id : number): Promise<User> {
         return this.createQueryBuilder('user')
