@@ -10,9 +10,10 @@ import { UsersController } from './users/users.controller';
 import { UsersService } from './users/users.service';
 import { AuthService } from './common/auth/auth.service';
 import { AuthModule } from './common/auth/auth.module';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
-  imports: [TasksModule, ConnectionModule, UsersModule, AuthModule],
+  imports: [TasksModule, ConnectionModule, UsersModule, AuthModule, PassportModule],
   controllers: [AppController, TasksController, UsersController],
   providers: [AppService, TasksService, UsersService, AuthService],
 })

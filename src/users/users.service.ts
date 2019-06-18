@@ -1,6 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { UserRepository } from 'src/repositories/user.repository';
 import { UserDTO } from './dto/user.dto';
 import { UserInterface } from './interface/user.interface';
@@ -56,9 +55,9 @@ export class UsersService {
         return all;
     }
 
-    async enableUser(id: number): Promise<UserInterface> {
+    async changeUserStatus(id: number, status: UserStatus): Promise<UserInterface> {
         const user = await this.userRepository.findById(id);
-        user.status = UserStatus.ENABLED;
+        user.status = status;
         await this.userRepository.saveUser(user);
         return user;
     }
@@ -66,5 +65,12 @@ export class UsersService {
     async deleteUser(id: number): Promise<UserInterface> {
         const user = await this.userRepository.findById(id);
         return await this.userRepository.deleteUser(user);
+    }
+
+    async confirmUser(email: string, token: string) {
+        const user = await this.userRepository.findByToken(token);
+        if(!user || user && user.status === UserStatus.DISABLED)
+            throw new ConflictException(`user with token ${token} not found or disabled`);
+        
     }
 }

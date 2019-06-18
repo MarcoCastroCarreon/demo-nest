@@ -1,7 +1,6 @@
-import { Injectable, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from 'src/entities/task.entity';
-import { Repository, getCustomRepository, getRepository } from 'typeorm';
 import { TaskRepository } from 'src/repositories/task.repository';
 import { TaskInterface } from './interface/task.inteface';
 import { TaskDTO } from './dto/task.dto';
@@ -15,14 +14,13 @@ export class TasksService {
     ) {}
 
     async getTasks(): Promise<Task[]> {
-        const tasksList = await getCustomRepository(TaskRepository).getTasks();
+        const tasksList = await this.taskRepository.getTasks();
         return tasksList;
     }
 
     async getTask(id: number): Promise<Task> {
-        const task = await getCustomRepository(TaskRepository);
-        const taskGot = task.getTask(id);
-        return taskGot;
+        const task = await this.taskRepository.getTask(id);
+        return task;
     }
 
     async createTask(task: TaskDTO): Promise<TaskInterface> {

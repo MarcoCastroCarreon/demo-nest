@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, HttpCode, Logger } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, HttpCode } from '@nestjs/common';
 import { TaskDTO } from './dto/task.dto';
 import { TasksService } from './tasks.service';
 import { TaskInterface } from './interface/task.inteface';

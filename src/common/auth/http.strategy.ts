@@ -2,7 +2,7 @@ import { Strategy } from 'passport-http-bearer';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UserRoleEnum } from '../enums/user-role.enum';
+import { UserStatus } from '../enums/user-status.enum';
 
 @Injectable()
 export class HttpStrategy extends PassportStrategy(Strategy) {
@@ -12,7 +12,7 @@ export class HttpStrategy extends PassportStrategy(Strategy) {
 
   async validate(token: string) {
     const user = await this.authService.validateUser(token);
-    if (!user || !user.role.includes(UserRoleEnum.ADMIN)) {
+    if (!user || user && user.status === UserStatus.DISABLED) {
       throw new UnauthorizedException();
     }
     return user;

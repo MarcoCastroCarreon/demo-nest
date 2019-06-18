@@ -1,8 +1,9 @@
-import { Controller, Get, HttpCode, Post, Body, UseGuards, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Get, HttpCode, Post, Body, UseGuards, Param, Put, Delete, BadRequestException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UserInterface } from './interface/user.interface';
 import { UserDTO } from './dto/user.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { filter } from 'src/common/enums/user-status.enum';
 
 @Controller('users')
 export class UsersController {
@@ -33,8 +34,10 @@ export class UsersController {
 
     @Put(':id')
     @HttpCode(204)
-    async updateUserStatus(@Param('id') id: number): Promise<void> {
-        await this.userService.enableUser(id);
+    async updateUserStatus(@Param('id') id: number, @Body() status: string): Promise<void> {
+        if(!status || !filter(status))
+            throw new BadRequestException(`status ${status} not exist`);
+        await this.userService.changeUserStatus(id, filter(status));
     }
 
     @Delete(':id')
