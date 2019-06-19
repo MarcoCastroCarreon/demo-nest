@@ -4,28 +4,28 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
 
-	<changeSet author="marco-castro" id="changelog-3.0">
+	<changeSet author="marco-castro" id="changelog-4.0">
 		<!-- Changes tag -->
-		<tagDatabase tag="tag-3.0" />
+		<tagDatabase tag="tag-4.0" />
 	</changeSet>
 
-	<changeSet author="marco-castro" id="changelog-3.0.1">
+	<changeSet author="marco-castro" id="changelog-4.0.1">
 		<!-- Change set for Catalogs DDL -->
 	</changeSet>
 
-	<changeSet author="marco-castro" id="changelog-3.0.2">
+	<changeSet author="marco-castro" id="changelog-4.0.2">
 		<!-- Change set for Catalogs DML (Must include custom rollback for this 
 			changes) -->
 	</changeSet>
 
-	<changeSet author="marco-castro" id="changelog-3.0.3">
+	<changeSet author="marco-castro" id="changelog-4.0.3">
 		<!-- Change set for Other Tables DDL -->
 		 <addColumn tableName="USER">
             <column name="ROLE" type="varchar(85)" />
          </addColumn>
     </changeSet>
 
-	<changeSet author="marco-castro" id="changelog-3.0.4">
+	<changeSet author="marco-castro" id="changelog-4.0.4">
 		<!-- Change set for Other Tables DML (Must include custom rollback for 
 			this changes) -->
 	</changeSet>
