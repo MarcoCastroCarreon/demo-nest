@@ -1,3 +1,4 @@
+import uuid = require('uuid');
 import { Injectable, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from 'src/repositories/user.repository';
@@ -5,9 +6,9 @@ import { UserDTO } from './dto/user.dto';
 import { UserInterface } from './interface/user.interface';
 import { User } from 'src/entities/user.entity';
 import { UserStatus } from 'src/common/enums/user-status.enum';
-import uuid = require('uuid');
-import { UserRole } from 'src/entities/user-role.entity';
 import { UserRoleEnum } from 'src/common/enums/user-role.enum';
+
+
 
 @Injectable()
 export class UsersService {
