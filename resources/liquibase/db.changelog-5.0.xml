@@ -44,9 +44,15 @@
 			deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
 			onUpdate="RESTRICT" />
 
-		<addForeignKeyConstraint constraintName="FK_USER_USER_1"
+		<addForeignKeyConstraint constraintName="FK_USER_ROLE_1"
 			baseTableName="USER_ROLE" baseColumnNames="USER_ID"
 			referencedTableName="USER" referencedColumnNames="ID"
+			deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
+			onUpdate="RESTRICT" />
+
+		<addForeignKeyConstraint constraintName="FK_USER_1"
+			baseTableName="USER" baseColumnNames="ROLE"
+			referencedTableName="USER_ROLE" referencedColumnNames="ROLE"
 			deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
 			onUpdate="RESTRICT" />
 
