@@ -6,6 +6,8 @@ import { UserInterface } from './interface/user.interface';
 import { User } from 'src/entities/user.entity';
 import { UserStatus } from 'src/common/enums/user-status.enum';
 import uuid = require('uuid');
+import { UserRole } from 'src/entities/user-role.entity';
+import { UserRoleEnum } from 'src/common/enums/user-role.enum';
 
 @Injectable()
 export class UsersService {
@@ -23,7 +25,7 @@ export class UsersService {
         newUser.name = user.name;
         newUser.password = user.password;
         newUser.status =  UserStatus.PENDING_ACCOUNT;
-        newUser.token = uuid.v4();
+        newUser.token = uuid.v4(); 
         const savedUser = await this.userRepository.createUser(newUser);
         const token = `token: ${savedUser.token}`;
         return token;
@@ -70,5 +72,12 @@ export class UsersService {
             throw new ConflictException(`user with ${JSON.stringify(token)} not found or disabled`);
         user.status = UserStatus.ENABLED;
         await this.userRepository.save(user);
+    }
+
+    async changeUserRole(id: number, role: UserRoleEnum) {
+        const user = await this.userRepository.findById(id);
+        if(!user || user && user.status === UserStatus.DISABLED)
+            throw new ConflictException(`user with id ${id} not found or disabled`);
+        
     }
 }
