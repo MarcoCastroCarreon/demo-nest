@@ -24,4 +24,8 @@ export class UserRepository extends Repository<User> {
         const deletedUser = User.remove(user);
         return deletedUser;
     }
+    getByEmail(email: string): Promise<User> {
+        const user = User.getByEmail(email);
+        return user;
+    }
 }

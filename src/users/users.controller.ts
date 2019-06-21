@@ -10,9 +10,9 @@ export class UsersController {
     constructor(private userService: UsersService) {}
 
     @Post()
-    @UseGuards(AuthGuard('bearer'))
+    // @UseGuards(AuthGuard('bearer'))
     @HttpCode(201)
-    create(@Body() user: UserDTO): Promise<UserInterface> {
+    create(@Body() user: UserDTO): Promise<string> {
         const savedUser = this.userService.create(user);
         return savedUser;
     }
@@ -38,6 +38,13 @@ export class UsersController {
         if(!status || !filter(status))
             throw new BadRequestException(`status ${status} not exist`);
         await this.userService.changeUserStatus(id, filter(status));
+    }
+
+    @Put('/confirm/:token')
+    @HttpCode(204)
+    async confirmUser(@Param('token') token: string): Promise<void> {
+        console.log(token);
+        await this.userService.confirmUser(token);
     }
 
     @Delete(':id')

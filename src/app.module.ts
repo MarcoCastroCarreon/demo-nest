@@ -11,9 +11,10 @@ import { UsersService } from './users/users.service';
 import { AuthService } from './common/auth/auth.service';
 import { AuthModule } from './common/auth/auth.module';
 import { PassportModule } from '@nestjs/passport';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [TasksModule, ConnectionModule, UsersModule, AuthModule, PassportModule],
+  imports: [TasksModule, ConnectionModule, UsersModule, AuthModule, PassportModule, TypeOrmModule],
   controllers: [AppController, TasksController, UsersController],
   providers: [AppService, TasksService, UsersService, AuthService],
 })

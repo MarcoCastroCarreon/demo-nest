@@ -68,4 +68,10 @@ export class User extends BaseEntity {
         return this.createQueryBuilder('user')
             .getMany();
     }
+
+    static getByEmail(email: string): Promise<User> {
+        return this.createQueryBuilder('user')
+            .where('user.email = :email', {email})
+            .getOne();
+    }
 }

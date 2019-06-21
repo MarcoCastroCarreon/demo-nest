@@ -14,7 +14,10 @@ export class UsersService {
         private userRepository: UserRepository,
     ) {}
 
-    async create(user: UserDTO): Promise<UserInterface> {
+    async create(user: UserDTO): Promise<string> {
+        const findUser = await this.userRepository.getByEmail(user.email);
+        if(findUser && findUser.status === UserStatus.ENABLED || findUser && findUser.status === UserStatus.PENDING_ACCOUNT)
+            throw new ConflictException(`user with email: {${user.email}} is already registered`);
         const newUser = new User();
         newUser.email = user.email;
         newUser.name = user.name;
@@ -22,14 +25,8 @@ export class UsersService {
         newUser.status =  UserStatus.PENDING_ACCOUNT;
         newUser.token = uuid.v4();
         const savedUser = await this.userRepository.createUser(newUser);
-        return {
-            id: savedUser.id,
-            name: savedUser.name,
-            email: savedUser.email,
-            password: savedUser.password,
-            status: savedUser.status,
-            token: savedUser.token,
-        };
+        const token = `token: ${savedUser.token}`;
+        return token;
     }
 
     async findById(id: number) {
@@ -67,10 +64,11 @@ export class UsersService {
         return await this.userRepository.deleteUser(user);
     }
 
-    async confirmUser(email: string, token: string) {
+    async confirmUser(token: string) {
         const user = await this.userRepository.findByToken(token);
         if(!user || user && user.status === UserStatus.DISABLED)
-            throw new ConflictException(`user with token ${token} not found or disabled`);
-        
+            throw new ConflictException(`user with ${JSON.stringify(token)} not found or disabled`);
+        user.status = UserStatus.ENABLED;
+        await this.userRepository.save(user);
     }
 }
