@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+
+	<changeSet author="marco-castro" id="changelog-6.0">
+		<!-- Changes tag -->
+		<tagDatabase tag="tag-6.0" />
+	</changeSet>
+
+	<changeSet author="marco-castro" id="changelog-6.0.1">
+		<!-- Change set for Catalogs DDL -->
+        <insert tableName="ROLE">
+            <column name="NAME" value="ADMIN">
+            <column name="DESCRIPTION" value="Candy Shop Admin">
+        </insert>
+        <insert tableName="ROLE">
+            <column name="NAME" value="WORKER">
+            <column name="DESCRIPTION" value="Candy Shop Worker">
+        </insert>
+        <insert tableName="ROLE">
+            <column name="NAME" value="CLIENT">
+            <column name="DESCRIPTION" value="Candy Shop Customer">
+        </insert>
+	</changeSet>
+
+	<changeSet author="marco-castro" id="changelog-6.0.2">
+		<!-- Change set for Catalogs DML (Must include custom rollback for this 
+			changes) -->
+	</changeSet>
+
+	<changeSet author="marco-castro" id="changelog-6.0.3">
+		<!-- Change set for Other Tables DDL -->
+    </changeSet>
+
+	<changeSet author="marco-castro" id="changelog-6.0.4">
+		<!-- Change set for Other Tables DML (Must include custom rollback for 
+			this changes) -->
+	</changeSet>
+
+</databaseChangeLog> 
