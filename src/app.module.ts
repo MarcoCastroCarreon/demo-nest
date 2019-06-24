@@ -12,10 +12,19 @@ import { AuthService } from './common/auth/auth.service';
 import { AuthModule } from './common/auth/auth.module';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Mailer, SendEmailMessage } from './common/mailer';
 
 @Module({
-  imports: [TasksModule, ConnectionModule, UsersModule, AuthModule, PassportModule, TypeOrmModule],
+  imports: [
+    TasksModule, 
+    ConnectionModule, 
+    UsersModule, 
+    AuthModule, 
+    PassportModule, 
+    TypeOrmModule, 
+    Mailer
+  ],
   controllers: [AppController, TasksController, UsersController],
-  providers: [AppService, TasksService, UsersService, AuthService],
+  providers: [AppService, TasksService, UsersService, AuthService, SendEmailMessage],
 })
 export class AppModule {}

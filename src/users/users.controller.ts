@@ -12,7 +12,7 @@ export class UsersController {
     @Post()
     // @UseGuards(AuthGuard('bearer'))
     @HttpCode(201)
-    create(@Body() user: UserDTO): Promise<string> {
+    create(@Body() user: UserDTO): Promise<UserInterface> {
         const savedUser = this.userService.create(user);
         return savedUser;
     }

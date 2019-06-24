@@ -2,6 +2,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Task } from 'src/entities/task.entity';
 import { config } from 'dotenv';
 import { User } from 'src/entities/user.entity';
+import { Role } from 'src/entities/role.entity';
+import { UserRole } from 'src/entities/user-role.entity';
 
 config();
 
@@ -10,7 +12,7 @@ const port = +process.env.DB_PORT;
 const username = process.env.DB_USER;
 const password = process.env.DB_PASSWORD;
 const database = process.env.DB_NAME;
-const entities = [Task, User];
+const entities = [Task, User, Role, UserRole];
 
 export const ConnectionModule = TypeOrmModule.forRoot({
     type: 'mysql',

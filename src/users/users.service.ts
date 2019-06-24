@@ -1,5 +1,5 @@
 import uuid = require('uuid');
-import { Injectable, ConflictException } from '@nestjs/common';
+import { Injectable, ConflictException, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from 'src/repositories/user.repository';
 import { UserDTO } from './dto/user.dto';
@@ -7,6 +7,8 @@ import { UserInterface } from './interface/user.interface';
 import { User } from 'src/entities/user.entity';
 import { UserStatus } from 'src/common/enums/user-status.enum';
 import { UserRoleEnum } from 'src/common/enums/user-role.enum';
+import { MailerService } from '@nest-modules/mailer';
+import { SendEmailMessage } from 'src/common/mailer';
 
 
 
@@ -15,9 +17,10 @@ export class UsersService {
     constructor(
         @InjectRepository(User)
         private userRepository: UserRepository,
+        private sendEmailService: SendEmailMessage
     ) {}
 
-    async create(user: UserDTO): Promise<string> {
+    async create(user: UserDTO): Promise<UserInterface> {
         const findUser = await this.userRepository.getByEmail(user.email);
         if(findUser && findUser.status === UserStatus.ENABLED || findUser && findUser.status === UserStatus.PENDING_ACCOUNT)
             throw new ConflictException(`user with email: {${user.email}} is already registered`);
@@ -27,9 +30,15 @@ export class UsersService {
         newUser.password = user.password;
         newUser.status =  UserStatus.PENDING_ACCOUNT;
         newUser.token = uuid.v4(); 
+
+        await this.sendEmailService.sendEmailService(newUser.email, newUser.token, newUser.name);
         const savedUser = await this.userRepository.createUser(newUser);
-        const token = `token: ${savedUser.token}`;
-        return token;
+        return {
+            id: savedUser.id,
+            name: savedUser.name,
+            email: savedUser.email,
+            status: savedUser.status
+        };
     }
 
     async findById(id: number) {
