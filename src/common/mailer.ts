@@ -21,7 +21,7 @@ export const Mailer = MailerModule.forRoot({
 export class SendEmailMessage {
     constructor(public emailService: MailerService){}
 
-    public async sendEmailService(email: string, token: string, name: string) {
+    public async sendConfirmUserEmail(email: string, token: string, name: string) {
         const options : ISendMailOptions =  {
             to: email,
             subject: 'Token de Registro',
@@ -39,4 +39,22 @@ export class SendEmailMessage {
               throw new InternalServerErrorException(`Mailer >-${error}-<`)
           })
     }
+
+    public async sendChangePasswordEmail(email: string,  name: string) {
+      const options : ISendMailOptions =  {
+          to: email,
+          subject: 'Cambio de Contraseña',
+          text: 'Cambio de Contraseña',
+          html: `<p>Su cambio de contraseña fue un exito! <strong>${name}</strong></p>`,
+        }
+      console.log('SEM');
+      await this.emailService.sendMail(options)
+        .then(result => {
+            console.log(result);
+        })
+        .catch(error => {
+            console.log(error);
+            throw new InternalServerErrorException(`Mailer >-${error}-<`)
+        })
+  }
 }

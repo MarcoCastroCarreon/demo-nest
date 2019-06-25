@@ -9,6 +9,7 @@ import { UserStatus } from 'src/common/enums/user-status.enum';
 import { UserRoleEnum } from 'src/common/enums/user-role.enum';
 import { MailerService } from '@nest-modules/mailer';
 import { SendEmailMessage } from 'src/common/mailer';
+import { ChangePassword } from './interface/change-password.interface';
 
 
 
@@ -31,7 +32,7 @@ export class UsersService {
         newUser.status =  UserStatus.PENDING_ACCOUNT;
         newUser.token = uuid.v4(); 
 
-        await this.sendEmailService.sendEmailService(newUser.email, newUser.token, newUser.name);
+        await this.sendEmailService.sendConfirmUserEmail(newUser.email, newUser.token, newUser.name);
         const savedUser = await this.userRepository.createUser(newUser);
         return {
             id: savedUser.id,
@@ -89,5 +90,15 @@ export class UsersService {
         if(!user || user && user.status === UserStatus.DISABLED)
             throw new ConflictException(`user with id ${id} not found or disabled`);
         
+    }
+    async changePassword(id: number, data: ChangePassword) {
+        const user = await this.userRepository.findById(id);
+        if(!user || user && user.status === UserStatus.DISABLED)
+            throw new ConflictException(`user with id ${id} not found or disabled`);
+        if(user.password != data.oldPassword)
+            throw new ConflictException(`oldPassword and userPassword not equal`);
+        await this.sendEmailService.sendChangePasswordEmail(user.email, user.name);
+        user.password = data.password;
+        await user.save();
     }
 }

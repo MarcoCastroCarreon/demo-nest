@@ -4,6 +4,7 @@ import { UserInterface } from './interface/user.interface';
 import { UserDTO } from './dto/user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { filter } from 'src/common/enums/user-status.enum';
+import { ChangePassword } from './interface/change-password.interface';
 
 @Controller('users')
 export class UsersController {
@@ -45,6 +46,14 @@ export class UsersController {
     async confirmUser(@Param('token') token: string): Promise<void> {
         console.log(token);
         await this.userService.confirmUser(token);
+    }
+
+    @Put('change-password/:id')
+    @HttpCode(204)
+    async changePassword(@Param('id') id:number, @Body() password: ChangePassword): Promise<void> {
+        if(password.oldPassword === password.password)
+            throw new BadRequestException(`oldPassword and newPassword cant'be equal`);
+        await this.userService.changePassword(id, password);
     }
 
     @Delete(':id')
