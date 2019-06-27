@@ -10,6 +10,7 @@ import { UserRoleEnum } from 'src/common/enums/user-role.enum';
 import { MailerService } from '@nest-modules/mailer';
 import { SendEmailMessage } from 'src/common/mailer';
 import { ChangePassword } from './interface/change-password.interface';
+import { UserRole } from 'src/entities/user-role.entity';
 
 
 
@@ -85,7 +86,7 @@ export class UsersService {
         await this.userRepository.save(user);
     }
 
-    async changeUserRole(id: number, role: UserRoleEnum) {
+    async changeUserRole(id: number, role: UserRoleEnum[]) {
         const user = await this.userRepository.findById(id);
         if(!user || user && user.status === UserStatus.DISABLED)
             throw new ConflictException(`user with id ${id} not found or disabled`);

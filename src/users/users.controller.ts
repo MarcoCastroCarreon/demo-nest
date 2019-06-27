@@ -5,6 +5,9 @@ import { UserDTO } from './dto/user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { filter } from 'src/common/enums/user-status.enum';
 import { ChangePassword } from './interface/change-password.interface';
+import { UserRoleBody } from './interface/user-roles-body.interface';
+import { parseRole } from 'src/common/enums/user-role.enum';
+import { AsignRolesResponse } from './interface/asing-roles-response.interface';
 
 @Controller('users')
 export class UsersController {
@@ -41,6 +44,18 @@ export class UsersController {
         await this.userService.changeUserStatus(id, filter(status));
     }
 
+    @Post(':id/roles')
+    @HttpCode(200)
+    async asignRoles(@Param(':id') id: number, @Body() body: UserRoleBody): Promise<AsignRolesResponse> {
+        if(!body.roles || !body.roles.length)
+            throw new BadRequestException(`roles are required`);
+        const roles = body.roles.map(role => parseRole(role));
+        if(roles.filter(role => !role).length > 0) 
+            throw new BadRequestException(`roles ${body.roles} have not a valid format`);
+        const response = await this.userService.changeUserRole(id, roles);
+        return response;
+    }
+
     @Put('/confirm/:token')
     @HttpCode(204)
     async confirmUser(@Param('token') token: string): Promise<void> {
@@ -61,4 +76,5 @@ export class UsersController {
     async deleteUser(@Param('id') id: number): Promise<void> {
         await this.userService.deleteUser(id);
     }
+
 }
