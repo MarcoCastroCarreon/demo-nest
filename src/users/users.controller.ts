@@ -21,6 +21,18 @@ export class UsersController {
         return savedUser;
     }
 
+    @Post(':id/roles')
+    @HttpCode(200)
+    async asignRoles(@Param(':id') id: number, @Body() body: UserRoleBody): Promise<AsignRolesResponse> {
+        if(!body.roles || !body.roles.length)
+            throw new BadRequestException(`roles are required`);
+        const roles = body.roles.map(role => parseRole(role));
+        if(roles.filter(role => !role).length > 0) 
+            throw new BadRequestException(`roles ${body.roles} have not a valid format`);
+        const response = await this.userService.changeUserRole(id, roles);
+        return response;
+    }
+    
     @Get()
     @UseGuards(AuthGuard('bearer'))
     @HttpCode(200)
@@ -42,18 +54,6 @@ export class UsersController {
         if(!status || !filter(status))
             throw new BadRequestException(`status ${status} not exist`);
         await this.userService.changeUserStatus(id, filter(status));
-    }
-
-    @Post(':id/roles')
-    @HttpCode(200)
-    async asignRoles(@Param(':id') id: number, @Body() body: UserRoleBody): Promise<AsignRolesResponse> {
-        if(!body.roles || !body.roles.length)
-            throw new BadRequestException(`roles are required`);
-        const roles = body.roles.map(role => parseRole(role));
-        if(roles.filter(role => !role).length > 0) 
-            throw new BadRequestException(`roles ${body.roles} have not a valid format`);
-        const response = await this.userService.changeUserRole(id, roles);
-        return response;
     }
 
     @Put('/confirm/:token')

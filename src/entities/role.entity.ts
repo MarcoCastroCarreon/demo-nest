@@ -16,4 +16,10 @@ export class Role extends BaseEntity {
 
     @OneToMany(type => UserRole, userRole => userRole.role)
     userRoles: UserRole[];
+
+    static getRoles(roles: UserRoleEnum[]): Promise<Role[]> {
+        return this.createQueryBuilder('role')
+            .where('role.name IN :roles', {roles})
+            .getMany()
+    }
 }
