@@ -13,6 +13,9 @@ import { AuthModule } from './common/auth/auth.module';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Mailer, SendEmailMessage } from './common/mailer';
+import { SalesController } from './sales/sales.controller';
+import { SalesService } from './sales/sales.service';
+import { SalesModule } from './sales/sales.module';
 
 @Module({
   imports: [
@@ -22,9 +25,9 @@ import { Mailer, SendEmailMessage } from './common/mailer';
     AuthModule, 
     PassportModule, 
     TypeOrmModule, 
-    Mailer
+    Mailer, SalesModule
   ],
-  controllers: [AppController, TasksController, UsersController],
-  providers: [AppService, TasksService, UsersService, AuthService, SendEmailMessage],
+  controllers: [AppController, TasksController, UsersController, SalesController],
+  providers: [AppService, TasksService, UsersService, AuthService, SendEmailMessage, SalesService],
 })
 export class AppModule {}
