@@ -16,6 +16,8 @@ import { Mailer, SendEmailMessage } from './common/mailer';
 import { SalesController } from './sales/sales.controller';
 import { SalesService } from './sales/sales.service';
 import { SalesModule } from './sales/sales.module';
+import { MongoModule } from './common/mongoConfig';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
@@ -25,7 +27,10 @@ import { SalesModule } from './sales/sales.module';
     AuthModule, 
     PassportModule, 
     TypeOrmModule, 
-    Mailer, SalesModule
+    Mailer, 
+    SalesModule,
+    MongoModule,
+    MongooseModule,
   ],
   controllers: [AppController, TasksController, UsersController, SalesController],
   providers: [AppService, TasksService, UsersService, AuthService, SendEmailMessage, SalesService],

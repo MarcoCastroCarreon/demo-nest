@@ -6,14 +6,9 @@ import { UserDTO } from './dto/user.dto';
 import { UserInterface } from './interface/user.interface';
 import { User } from 'src/entities/user.entity';
 import { UserStatus } from 'src/common/enums/user-status.enum';
-import { UserRoleEnum } from 'src/common/enums/user-role.enum';
 import { SendEmailMessage } from 'src/common/mailer';
 import { ChangePassword } from './interface/change-password.interface';
-import { RoleRepository } from 'src/repositories/role.repository';
-import { UserRole } from 'src/entities/user-role.entity';
-import { UserRoleRepository } from 'src/repositories/user-role.repository';
 import { AsignRolesResponse } from './interface/asing-roles-response.interface';
-
 
 
 @Injectable()
@@ -22,8 +17,6 @@ export class UsersService {
         @InjectRepository(User)
         private userRepository: UserRepository,
         private sendEmailService: SendEmailMessage,
-        private roleRepository: RoleRepository,
-        private userRoleRepository: UserRoleRepository
     ) {}
 
     async create(user: UserDTO): Promise<UserInterface> {
@@ -43,7 +36,7 @@ export class UsersService {
             id: savedUser.id,
             name: savedUser.name,
             email: savedUser.email,
-            status: savedUser.status
+            status: savedUser.status,
         };
     }
 
@@ -107,14 +100,14 @@ export class UsersService {
 
         return {
             id: user.id,
-            roles: userRoles
+            roles: userRoles,
         };
     }
     async changePassword(id: number, data: ChangePassword): Promise<void> {
         const user = await this.userRepository.findById(id);
-        if(!user || user && user.status === UserStatus.DISABLED)
+        if (user || user && user.status === UserStatus.DISABLED)
             throw new ConflictException(`user with id ${id} not found or disabled`);
-        if(user.password != data.oldPassword)
+        if (user.password !== data.oldPassword)
             throw new ConflictException(`oldPassword and userPassword not equal`);
         await this.sendEmailService.sendChangePasswordEmail(user.email, user.name);
         user.password = data.password;

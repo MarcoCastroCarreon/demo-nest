@@ -1,16 +1,49 @@
-import { Injectable } from '@nestjs/common';
-import { SaleRepository } from 'src/repositories/sales.repository';
+import { Injectable, ConflictException } from '@nestjs/common';
+import CreateSale, { SaleModel, CandyModel } from './interface/sale.interface';
+import { UserRepository } from 'src/repositories/user.repository';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Sale } from 'src/entities/sale.entity';
+import { User } from 'src/entities/user.entity';
+import { UserModel } from 'src/users/interface/user.interface';
 
 @Injectable()
 export class SalesService {
     constructor(
-        @InjectRepository(Sale)
-        private saleRepository: SaleRepository,
+        @InjectModel('Sale')
+        private saleModel: Model<SaleModel>,
+        @InjectModel('User')
+        private userModel: Model<UserModel>,
+        @InjectModel('Candy')
+        private candyModel: Model<CandyModel>,
+        @InjectRepository(User)
+        private userRepository: UserRepository,
     ) {}
 
-    async createSale() {
-        
+    async createSale(sale: CreateSale) {
+        const newSale = new this.saleModel();
+        const user = await this.userRepository.findById(sale.workerId);
+        if (!user)
+            throw new ConflictException(`user with id ${sale.workerId} does not exist`);
+
+        const worker = new this.userModel();
+        worker.id = user.id;
+        worker.name = user.name;
+        worker.email = user.email;
+        worker.userType = user.userType;
+
+        const candys: CandyModel[] = [];
+        for (const candy of sale.sale) {
+            const cdy = new this.candyModel();
+            cdy.name = candy.name;
+            cdy.cost = candy.cost;
+            candys.push(cdy);
+        }
+
+        newSale.worker = worker;
+        newSale.admin = worker;
+        newSale.candys = candys;
+
+        await newSale.save();
     }
 }

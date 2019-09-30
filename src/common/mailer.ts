@@ -28,7 +28,7 @@ export class SendEmailMessage {
             text: 'Token',
             html: `<b>Bienvenida a Dulces Regionales(Orizaba) aqui esta tu codigo para autorizar tu registro, gracias por unirte a nosotros 
             codigo de registro: <strong>${token}</strong></b>`,
-          }
+          };
         console.log('SEM');
         await this.emailService.sendMail(options)
           .then(result => {
@@ -37,7 +37,7 @@ export class SendEmailMessage {
           .catch(error => {
               console.log(error);
               throw new InternalServerErrorException(`Mailer >-${error}-<`)
-          })
+          });
     }
 
     public async sendChangePasswordEmail(email: string,  name: string) {

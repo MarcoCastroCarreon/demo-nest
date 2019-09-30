@@ -1,18 +1,18 @@
-export enum UserRoleEnum {
+export enum UserTypeEnum {
     ADMIN = 'ADMIN',
-    WORKER = 'WORKER'
+    WORKER = 'WORKER',
 }
 
 export const parseRole = (value: string) => {
-    if(!value)
+    if (!value)
         return null;
-    
-        switch (value) {
-            case UserRoleEnum.ADMIN:
-                return UserRoleEnum.ADMIN;
-            case UserRoleEnum.WORKER:
-                return UserRoleEnum.WORKER;
-            default:
-                return null;
-        }
+
+    switch (value) {
+        case UserTypeEnum.ADMIN:
+            return UserTypeEnum.ADMIN;
+        case UserTypeEnum.WORKER:
+            return UserTypeEnum.WORKER;
+        default:
+            return null;
+    }
 }
