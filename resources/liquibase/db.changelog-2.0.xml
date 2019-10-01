@@ -36,6 +36,9 @@
             <column name="STATUS" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
+			<column name="USER_TYPE" type="VARCHAR(800)">
+                <constraints nullable="false"/>
+            </column>
 		</createTable>
     </changeSet>
 

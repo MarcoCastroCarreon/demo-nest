@@ -18,6 +18,7 @@ import { SalesService } from './sales/sales.service';
 import { SalesModule } from './sales/sales.module';
 import { MongoModule } from './common/mongoConfig';
 import { MongooseModule } from '@nestjs/mongoose';
+import { NestUtils } from './common/utils';
 
 @Module({
   imports: [
@@ -31,8 +32,9 @@ import { MongooseModule } from '@nestjs/mongoose';
     SalesModule,
     MongoModule,
     MongooseModule,
+    NestUtils,
   ],
   controllers: [AppController, TasksController, UsersController, SalesController],
-  providers: [AppService, TasksService, UsersService, AuthService, SendEmailMessage, SalesService],
+  providers: [AppService, TasksService, UsersService, AuthService, SendEmailMessage, SalesService, NestUtils],
 })
 export class AppModule {}

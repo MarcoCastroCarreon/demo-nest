@@ -52,9 +52,9 @@ export class User extends BaseEntity {
     })
     userType: UserTypeEnum;
 
-    static findOneById(id : number): Promise<User> {
+    static findOneById(id: number): Promise<User> {
         return this.createQueryBuilder('user')
-            .where('user.id =: id', {id})
+            .where('user.id = :id', {id})
             .getOne();
     }
 
