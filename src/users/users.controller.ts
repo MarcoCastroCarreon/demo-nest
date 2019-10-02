@@ -15,13 +15,19 @@ export class UsersController {
     @Post()
     // @UseGuards(AuthGuard('bearer'))
     @HttpCode(201)
-    create(@Body() user: UserDTO): Promise<UserInterface> {
+    async create(@Body() user: UserDTO): Promise<UserInterface> {
         const { userType, name } = user;
-        const savedUser = this.userService.create(user);
+        Logger.log(user);
+        const gotNumbers = await this.nestUtils.checkString(name);
         if (!userType || userType && !parseRole(userType))
             throw new BadRequestException(`userType ${userType} is not valid`);
-        if (!name || name && !this.nestUtils.parseString(name))
-            throw new BadRequestException(`user name can't contain numbers`);
+        
+        if (!name) throw new BadRequestException(`name can't be null`);
+
+        if (gotNumbers)
+            throw new BadRequestException(`name ${name} can't contain numbers`);
+            
+        const savedUser = this.userService.create(user);
         return savedUser;
     }
 

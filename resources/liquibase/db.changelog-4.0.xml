@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+
+	<changeSet author="marco-castro" id="changelog-4.0">
+		<!-- Changes tag -->
+		<tagDatabase tag="tag-4.0" />
+	</changeSet>
+
+	<changeSet author="marco-castro" id="changelog-4.0.1">
+		<!-- Change set for Catalogs DDL -->
+	</changeSet>
+
+	<changeSet author="marco-castro" id="changelog-4.0.2">
+		<!-- Change set for Catalogs DML (Must include custom rollback for this 
+			changes) -->
+	</changeSet>
+
+	<changeSet author="marco-castro" id="changelog-4.0.3">
+		<!-- Change set for Other Tables DDL -->
+		 <createTable tableName="SALE">
+			<column name="ID" type="BIGINT" autoIncrement="true">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+            <column name="WORKER_ID" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+            <column name="ADMIN_ID" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+            <column name="SALE_MONGO_ID" type="VARCHAR(250)">
+				<constraints nullable="false" />
+			</column>
+            <column name="CREATION_DATE" type="DATETIME">
+				<constraints nullable="false" />
+			</column>
+            <column name="LAST_UPDATE_DATE" type="DATETIME">
+				<constraints nullable="true" />
+			</column>
+            <column name="STATUS" type="VARCHAR(50)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+    </changeSet>
+
+	<changeSet author="marco-castro" id="changelog-4.0.4">
+		<!-- Change set for Other Tables DML (Must include custom rollback for 
+			this changes) -->
+	</changeSet>
+
+</databaseChangeLog> 

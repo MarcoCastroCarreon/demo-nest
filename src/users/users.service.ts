@@ -3,11 +3,14 @@ import { Injectable, ConflictException, NotFoundException } from '@nestjs/common
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from 'src/repositories/user.repository';
 import { UserDTO } from './dto/user.dto';
-import { UserInterface } from './interface/user.interface';
+import { UserInterface, UserModel } from './interface/user.interface';
 import { User } from 'src/entities/user.entity';
 import { UserStatus } from 'src/common/enums/user-status.enum';
 import { SendEmailMessage } from 'src/common/mailer';
 import { ChangePassword } from './interface/change-password.interface';
+import { parseRole } from 'src/common/enums/user-role.enum';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class UsersService {
@@ -15,6 +18,7 @@ export class UsersService {
         @InjectRepository(User)
         private userRepository: UserRepository,
         private sendEmailService: SendEmailMessage,
+        @InjectModel('User') private userModel: Model<UserModel>,
     ) { }
 
     async create(user: UserDTO): Promise<UserInterface> {
@@ -26,10 +30,17 @@ export class UsersService {
         newUser.name = user.name;
         newUser.password = user.password;
         newUser.status = UserStatus.PENDING_ACCOUNT;
+        newUser.userType = parseRole(user.userType);
         newUser.token = uuid.v4();
+
+        const mongoUser = new this.userModel();
+
+        mongoUser.mySqlId = newUser.id;
+        mongoUser.userType = parseRole(user.userType);
 
         await this.sendEmailService.sendConfirmUserEmail(newUser.email, newUser.token, newUser.name);
         const savedUser = await this.userRepository.createUser(newUser);
+        await mongoUser.save();
         return {
             id: savedUser.id,
             name: savedUser.name,

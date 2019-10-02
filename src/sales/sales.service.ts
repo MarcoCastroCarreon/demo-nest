@@ -1,4 +1,4 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import { Injectable, ConflictException, Logger } from '@nestjs/common';
 import CreateSale, { SaleModel, CandyModel } from './interface/sale.interface';
 import { UserRepository } from 'src/repositories/user.repository';
 import { InjectModel } from '@nestjs/mongoose';
@@ -26,10 +26,8 @@ export class SalesService {
         if (!user)
             throw new ConflictException(`user with id ${sale.workerId} does not exist`);
 
-        const worker = new this.userModel();
-        worker.id = user.id;
-        worker.name = user.name;
-        worker.email = user.email;
+        const worker: UserModel = new this.userModel();
+        worker.mySqlId = user.id;
         worker.userType = user.userType;
 
         const candys: CandyModel[] = [];
@@ -41,8 +39,9 @@ export class SalesService {
         }
 
         newSale.worker = worker;
-        newSale.admin = worker;
         newSale.candys = candys;
+
+        Logger.log(newSale);
 
         await newSale.save();
     }

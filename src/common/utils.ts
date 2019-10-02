@@ -1,7 +1,11 @@
+import { Logger } from '@nestjs/common';
 
 export class NestUtils {
 
-    async parseString(value: string): Promise<boolean> {
-        return /\d/.test(value);
+    async checkString(value: string): Promise<boolean> {
+        Logger.log(value);
+        const str = /\d/.test(value);
+        Logger.log(str);
+        return str;
     }
 }

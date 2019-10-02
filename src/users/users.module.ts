@@ -5,11 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserRepository } from 'src/repositories/user.repository';
 import { Mailer, SendEmailMessage } from 'src/common/mailer';
 import { NestUtils } from 'src/common/utils';
+import { MongooseModule } from '@nestjs/mongoose';
+import { UserSchema } from 'src/entities/mongo/models/user.model';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserRepository]), Mailer],
+  imports: [MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]), TypeOrmModule.forFeature([UserRepository]), Mailer],
   providers: [UsersService, SendEmailMessage, NestUtils],
   controllers: [UsersController],
-  exports: [UsersService, TypeOrmModule, Mailer, NestUtils],
+  exports: [UsersService, TypeOrmModule, Mailer, NestUtils, MongooseModule],
 })
 export class UsersModule {}

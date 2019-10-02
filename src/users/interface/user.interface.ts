@@ -1,4 +1,4 @@
-import { Document } from 'mongoose';
+import { Document, DocumentQuery, Query } from 'mongoose';
 import { UserTypeEnum } from 'src/common/enums/user-role.enum';
 
 export interface UserInterface {
@@ -10,8 +10,6 @@ export interface UserInterface {
 }
 
 export interface UserModel extends Document {
-    id: number;
-    name: string;
-    email: string;
+    mySqlId: number;
     userType: UserTypeEnum;
 }
