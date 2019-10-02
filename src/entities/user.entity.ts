@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, BaseEntity, Column, OneToMany } from 'typeorm';
 import { UserStatus } from 'src/common/enums/user-status.enum';
 import { UserTypeEnum } from 'src/common/enums/user-role.enum';
+import { Sale } from './sale.entity';
 
 @Entity({name: 'USER'})
 export class User extends BaseEntity {
@@ -51,6 +52,9 @@ export class User extends BaseEntity {
         enum: UserTypeEnum,
     })
     userType: UserTypeEnum;
+
+    @OneToMany(type => Sale, sale => sale.worker)
+    sales: Sale[];
 
     static findOneById(id: number): Promise<User> {
         return this.createQueryBuilder('user')

@@ -1,2 +1,2 @@
-liquibase --driver=com.mysql.jdbc.Driver --classpath=C:\tools\mysql-connector-java-5.1.48\mysql-connector-java-5.1.48.jar --changeLogFile=db.changelog-master.xml --url="jdbc:mysql://localhost:3306/nestdemo" --username=root --password=password update
+liquibase --driver=com.mysql.jdbc.Driver --classpath=C:\tools\mysql-connector-java-5.1.48\mysql-connector-java-5.1.48.jar --changeLogFile=db.changelog-4.0.xml --url="jdbc:mysql://localhost:3306/nestdemo" --username=root --password=password update
 pause

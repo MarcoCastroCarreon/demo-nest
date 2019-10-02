@@ -1,10 +1,9 @@
 import { Document } from 'mongoose';
-import { UserTypeEnum } from 'src/common/enums/user-role.enum';
 import { UserModel } from 'src/users/interface/user.interface';
-import { ObjectId } from 'bson';
 
 export default interface CreateSale {
     workerId: number;
+    adminId: number;
     sale?: CandyModel[];
 }
 

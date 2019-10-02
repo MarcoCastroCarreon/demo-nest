@@ -43,6 +43,19 @@
 				<constraints nullable="false" />
 			</column>
 		</createTable>
+
+		<addForeignKeyConstraint constraintName="SALE_USER_0"
+            baseTableName="SALE" baseColumnNames="WORKER_ID"
+            referencedTableName="USER" referencedColumnNames="ID"
+            deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
+            onUpdate="RESTRICT" />
+
+		<addForeignKeyConstraint constraintName="SALE_USER_1"
+            baseTableName="SALE" baseColumnNames="ADMIN_ID"
+            referencedTableName="USER" referencedColumnNames="ID"
+            deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
+            onUpdate="RESTRICT" />
+
     </changeSet>
 
 	<changeSet author="marco-castro" id="changelog-4.0.4">
