@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, BaseEntity, Column, OneToMany } from 't
 import { UserStatus } from 'src/common/enums/user-status.enum';
 import { UserTypeEnum } from 'src/common/enums/user-role.enum';
 import { Sale } from './sale.entity';
+import { Logger } from '@nestjs/common';
 
 @Entity({name: 'USER'})
 export class User extends BaseEntity {
@@ -53,22 +54,29 @@ export class User extends BaseEntity {
     })
     userType: UserTypeEnum;
 
+    @Column({ name: 'CREATION_DATE' })
+    creationDate: Date;
+
     @OneToMany(type => Sale, sale => sale.worker)
     sales: Sale[];
 
     static findOneById(id: number): Promise<User> {
+        Logger.log('Returning Query - User');
         return this.createQueryBuilder('user')
             .where('user.id = :id', {id})
+            .andWhere('user.status = :status', { status: UserStatus.ENABLED })
             .getOne();
     }
 
     static findOneByToken(token: string): Promise<User> {
+        Logger.log('Returning Query - User');
         return this.createQueryBuilder('user')
             .where('user.token = :token', {token})
             .getOne();
     }
 
     static findAll(): Promise<User[]> {
+        Logger.log('Returning Query - User');
         return this.createQueryBuilder('user')
             .getMany();
     }
@@ -76,6 +84,14 @@ export class User extends BaseEntity {
     static getByEmail(email: string): Promise<User> {
         return this.createQueryBuilder('user')
             .where('user.email = :email', {email})
+            .getOne();
+    }
+
+    static findAdminById(id: number) {
+        return this.createQueryBuilder('user')
+            .where('user.id = :id', {id})
+            .andWhere('user.userType = :userType', { userType: UserTypeEnum.ADMIN })
+            .andWhere('user.status = :status', { status: UserStatus.ENABLED })
             .getOne();
     }
 }

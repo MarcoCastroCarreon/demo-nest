@@ -1,6 +1,7 @@
-import { PrimaryGeneratedColumn, Column, Entity, BaseEntity, ManyToOne, JoinColumn, ObjectID } from 'typeorm';
+import { PrimaryGeneratedColumn, Column, Entity, BaseEntity, ManyToOne, JoinColumn, ObjectID, ObjectIdColumn } from 'typeorm';
 import { User } from './user.entity';
 import { SalesStatusEnum } from 'src/common/enums/sale-status.enum';
+import { Logger } from '@nestjs/common';
 
 @Entity({ name: 'SALE' })
 export class Sale extends BaseEntity {
@@ -16,7 +17,7 @@ export class Sale extends BaseEntity {
     @JoinColumn({ name: 'ADMIN_ID' })
     admin: User;
 
-    @Column({ name: 'SALE_MONDO_ID' })
+    @Column({ name: 'SALE_MONGO_ID'})
     mongoId: string;
 
     @Column({ name: 'CREATION_DATE' })
@@ -27,5 +28,14 @@ export class Sale extends BaseEntity {
 
     @Column({ name: 'STATUS', type: 'enum', enum: SalesStatusEnum })
     status: SalesStatusEnum;
+
+    static getSalesByAdminId(adminId: number) {
+        Logger.log('Returning Query - SALE');
+        return this.createQueryBuilder('sale')
+            .leftJoinAndSelect('sale.admin', 'admin')
+            .leftJoinAndSelect('sale.worker', 'worker')
+            .where('admin.id = :adminId', {adminId})
+            .getMany();
+    }
 
 }

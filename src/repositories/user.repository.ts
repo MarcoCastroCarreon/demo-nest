@@ -1,30 +1,50 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { User } from 'src/entities/user.entity';
+import { Logger } from '@nestjs/common';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
-    createUser(user: User): Promise<User> {
-        return User.save(user);
+    async createUser(user: User): Promise<User> {
+        Logger.log('Start Repository - USER - createUser');
+        Logger.log('End Repository - USER - createUser');
+        return await User.save(user);
     }
-    findById(id: number): Promise<User> {
-        return User.findOneById(id);
+    async findById(id: number): Promise<User> {
+        Logger.log('Start Repository - USER - findById');
+        Logger.log('End Repository - USER - findById');
+        return await User.findOneById(id);
     }
-    findByToken(token: string): Promise<User> {
-        return User.findOneByToken(token);
+    async findByToken(token: string): Promise<User> {
+        Logger.log('Start Repository - USER - findByToken');
+        Logger.log('End Repository - USER - findByToken');
+        return await User.findOneByToken(token);
     }
-    findAll(): Promise<User[]> {
-        return User.findAll();
+    async findAll(): Promise<User[]> {
+        Logger.log('Start Repository - USER - findAll');
+        Logger.log('End Repository - USER - findAll');
+        return await User.findAll();
     }
-    saveUser(user: User): Promise<User> {
-        const savedUser = User.save(user);
+    async saveUser(user: User): Promise<User> {
+        Logger.log('Start Repository - USER - saveUser');
+        const savedUser = await User.save(user);
+        Logger.log('End Repository - USER - saveUser');
         return savedUser;
     }
-    deleteUser(user: User): Promise<User> {
-        const deletedUser = User.remove(user);
+    async deleteUser(user: User): Promise<User> {
+        Logger.log('Start Repository - USER - deleteUser');
+        const deletedUser = await User.remove(user);
+        Logger.log('End Repository - USER - deleteUser');
         return deletedUser;
     }
-    getByEmail(email: string): Promise<User> {
-        const user = User.getByEmail(email);
+    async getByEmail(email: string): Promise<User> {
+        Logger.log('Start Repository - USER - getByEmail');
+        const user = await User.getByEmail(email);
+        Logger.log('End Repository - USER - getByEmail');
         return user;
+    }
+    async findAdminById(id: number): Promise<User> {
+        Logger.log('Start Repository - USER');
+        Logger.log('End Repository - USER');
+        return User.findAdminById(id);
     }
 }

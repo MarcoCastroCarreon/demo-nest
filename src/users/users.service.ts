@@ -1,4 +1,5 @@
 import uuid = require('uuid');
+import moment from 'moment';
 import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from 'src/repositories/user.repository';
@@ -32,6 +33,7 @@ export class UsersService {
         newUser.status = UserStatus.PENDING_ACCOUNT;
         newUser.userType = parseRole(user.userType);
         newUser.token = uuid.v4();
+        newUser.creationDate = moment(moment.now(), 'x').toDate();
 
         const mongoUser = new this.userModel();
 
