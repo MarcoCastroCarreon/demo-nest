@@ -29,6 +29,15 @@ export class Sale extends BaseEntity {
     @Column({ name: 'STATUS', type: 'enum', enum: SalesStatusEnum })
     status: SalesStatusEnum;
 
+    @Column({ name: 'SALES_PROFIT', type: 'float' })
+    salesProfit: number;
+
+    @Column({ name: 'PRODUCT_EQUIVALENCE', type: 'float' })
+    productEquivalence: number;
+
+    @Column({ name: 'FINISHED_DATE' })
+    finishedDate: Date;
+    
     static getSalesByAdminId(adminId: number) {
         Logger.log('Returning Query - SALE');
         return this.createQueryBuilder('sale')
@@ -36,6 +45,7 @@ export class Sale extends BaseEntity {
             .leftJoinAndSelect('sale.worker', 'worker')
             .where('admin.id = :adminId', {adminId})
             .getMany();
+            
     }
 
 }

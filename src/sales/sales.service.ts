@@ -99,13 +99,14 @@ export class SalesService {
         if (!sales.length)
             return [];
 
-        const responseSales = sales.map(({ id, status, worker, creationDate, mongoId }) => ({
+        const responseSales = sales.map(({ id, status, worker, creationDate, mongoId, finishedDate }) => ({
             id,
             status,
             mongoId,
             worker: worker.name,
             creationDate,
             candys: null,
+            finishedDate,
         }));
 
         for (const sale of responseSales) {

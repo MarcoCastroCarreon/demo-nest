@@ -82,12 +82,14 @@ export class User extends BaseEntity {
     }
 
     static getByEmail(email: string): Promise<User> {
+        Logger.log('Returning Query - User');
         return this.createQueryBuilder('user')
             .where('user.email = :email', {email})
             .getOne();
     }
 
     static findAdminById(id: number) {
+        Logger.log('Returning Query - User');
         return this.createQueryBuilder('user')
             .where('user.id = :id', {id})
             .andWhere('user.userType = :userType', { userType: UserTypeEnum.ADMIN })
