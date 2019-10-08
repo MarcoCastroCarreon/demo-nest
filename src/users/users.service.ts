@@ -1,10 +1,12 @@
 import uuid = require('uuid');
 import moment from 'moment';
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { Injectable, ConflictException, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from 'src/repositories/user.repository';
 import { UserDTO } from './dto/user.dto';
-import { UserInterface, UserModel } from './interface/user.interface';
+import { UserInterface, UserModel, UserLoginReponse } from './interface/user.interface';
 import { User } from 'src/entities/user.entity';
 import { UserStatus } from 'src/common/enums/user-status.enum';
 import { SendEmailMessage } from 'src/common/mailer';
@@ -12,6 +14,11 @@ import { ChangePassword } from './interface/change-password.interface';
 import { parseRole } from 'src/common/enums/user-role.enum';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { config } from 'dotenv';
+
+config();
+
+const jwtSecret = process.env.JWT_SECRET;
 
 @Injectable()
 export class UsersService {
@@ -29,11 +36,17 @@ export class UsersService {
         const newUser = new User();
         newUser.email = user.email;
         newUser.name = user.name;
-        newUser.password = user.password;
         newUser.status = UserStatus.PENDING_ACCOUNT;
         newUser.userType = parseRole(user.userType);
         newUser.token = uuid.v4();
         newUser.creationDate = moment(moment.now(), 'x').toDate();
+
+        const salts = 10;
+        bcrypt.genSalt(salts, (err, salt) => {
+            bcrypt.hash(user.password, salt, (error, hash) => {
+                newUser.password = hash;
+            });
+        });
 
         const mongoUser = new this.userModel();
 
@@ -104,5 +117,19 @@ export class UsersService {
         await this.sendEmailService.sendChangePasswordEmail(user.email, user.name);
         user.password = data.password;
         await user.save();
+    }
+
+    async findByEmailAndLogin(email: string, password: string): Promise<UserLoginReponse> {
+        const user = await this.userRepository.getByEmail(email);
+        if (!user) throw new NotFoundException(`user with email ${email} not found`);
+
+        bcrypt.compare(password, user.password, (err, same) => {
+            if (err) throw new ConflictException(`incorrect password`);
+        });
+
+        const token = jwt.sign({ username: email, password: user.password }, jwtSecret);
+        return {
+            access_token: token,
+        };
     }
 }

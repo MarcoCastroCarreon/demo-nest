@@ -1,6 +1,6 @@
-import { Controller, Get, HttpCode, Post, Body, UseGuards, Param, Put, Delete, BadRequestException, Logger, Request } from '@nestjs/common';
+import { Controller, Get, HttpCode, Post, Body, UseGuards, Param, Put, Delete, BadRequestException, Logger, Request, Header } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UserInterface, UserLoginResponse } from './interface/user.interface';
+import { UserInterface, UserLoginBody, UserLoginReponse } from './interface/user.interface';
 import { UserDTO } from './dto/user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { filter } from 'src/common/enums/user-status.enum';
@@ -11,9 +11,18 @@ import { NestUtils } from 'src/common/utils';
 @Controller('users')
 export class UsersController {
     constructor(
-        private userService: UsersService, 
+        private userService: UsersService,
         private nestUtils: NestUtils,
-        ) { }
+    ) { }
+
+    @Post('/login')
+    @HttpCode(200)
+    async login(@Body() req: UserLoginBody): Promise<UserLoginReponse> {
+        if (!req.email || !req.password)
+            throw new BadRequestException('email and password are required');
+        const token = await this.userService.findByEmailAndLogin(req.email, req.password);
+        return token;
+    }
 
     @Post()
     @HttpCode(201)
@@ -23,12 +32,12 @@ export class UsersController {
         const gotNumbers = await this.nestUtils.checkString(name);
         if (!userType || userType && !parseRole(userType))
             throw new BadRequestException(`userType ${userType} is not valid`);
-        
+
         if (!name) throw new BadRequestException(`name can't be null`);
 
         if (gotNumbers)
             throw new BadRequestException(`name ${name} can't contain numbers`);
-            
+
         const savedUser = this.userService.create(user);
         return savedUser;
     }

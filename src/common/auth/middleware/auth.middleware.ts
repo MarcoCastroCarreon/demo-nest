@@ -28,7 +28,7 @@ export class AuthenticationMiddleWare implements NestMiddleware {
                 Logger.log(decode);
                 const code = JSON.stringify(decode);
                 const info = JSON.parse(code);
-                const user = this.userRepository.findByIdAndType(info.userId, info.userType);
+                const user = this.userRepository.getByEmail(info.email);
                 if (!user)
                     throw new UnauthorizedException('Token is not valid');
             });

@@ -14,6 +14,11 @@ export interface UserModel extends Document {
     userType: UserTypeEnum;
 }
 
-export interface UserLoginResponse {
+export interface UserLoginBody {
+    email: string;
+    password: string;
+}
+
+export interface UserLoginReponse {
     access_token: string;
 }

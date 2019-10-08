@@ -1,9 +1,6 @@
 import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TasksController } from './tasks/tasks.controller';
-import { TasksModule } from './tasks/tasks.module';
-import { TasksService } from './tasks/tasks.service';
 import { ConnectionModule } from './common/config';
 import { UsersModule } from './users/users.module';
 import { UsersController } from './users/users.controller';
@@ -20,8 +17,7 @@ import { NestUtils } from './common/utils';
 import { AuthenticationMiddleWare } from './common/auth/middleware/auth.middleware';
 
 @Module({
-  imports: [
-    TasksModule, 
+  imports: [ 
     ConnectionModule, 
     UsersModule,  
     PassportModule, 
@@ -32,8 +28,8 @@ import { AuthenticationMiddleWare } from './common/auth/middleware/auth.middlewa
     MongooseModule,
     NestUtils,
   ],
-  controllers: [AppController, TasksController, UsersController, SalesController],
-  providers: [AppService, TasksService, UsersService, SendEmailMessage, SalesService, NestUtils],
+  controllers: [AppController, UsersController, SalesController],
+  providers: [AppService, UsersService, SendEmailMessage, SalesService, NestUtils],
 })
 export class AppModule implements NestModule { 
     configure(consumer: MiddlewareConsumer) {
