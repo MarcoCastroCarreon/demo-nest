@@ -1,6 +1,6 @@
-import { Controller, Get, HttpCode, Post, Body, UseGuards, Param, Put, Delete, BadRequestException, Logger } from '@nestjs/common';
+import { Controller, Get, HttpCode, Post, Body, UseGuards, Param, Put, Delete, BadRequestException, Logger, Request } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UserInterface } from './interface/user.interface';
+import { UserInterface, UserLoginResponse } from './interface/user.interface';
 import { UserDTO } from './dto/user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { filter } from 'src/common/enums/user-status.enum';
@@ -10,10 +10,12 @@ import { NestUtils } from 'src/common/utils';
 
 @Controller('users')
 export class UsersController {
-    constructor(private userService: UsersService, private nestUtils: NestUtils) { }
+    constructor(
+        private userService: UsersService, 
+        private nestUtils: NestUtils,
+        ) { }
 
     @Post()
-    // @UseGuards(AuthGuard('bearer'))
     @HttpCode(201)
     async create(@Body() user: UserDTO): Promise<UserInterface> {
         const { userType, name } = user;

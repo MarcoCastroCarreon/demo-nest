@@ -33,4 +33,5 @@ export interface GetSalesResponse {
     worker: string;
     creationDate: Date;
     candys: any[];
+    finishedDate: Date;
 }

@@ -4,7 +4,7 @@ import { UserTypeEnum } from 'src/common/enums/user-role.enum';
 import { Sale } from './sale.entity';
 import { Logger } from '@nestjs/common';
 
-@Entity({name: 'USER'})
+@Entity({ name: 'USER' })
 export class User extends BaseEntity {
     @PrimaryGeneratedColumn({
         name: 'ID',
@@ -63,7 +63,7 @@ export class User extends BaseEntity {
     static findOneById(id: number): Promise<User> {
         Logger.log('Returning Query - User');
         return this.createQueryBuilder('user')
-            .where('user.id = :id', {id})
+            .where('user.id = :id', { id })
             .andWhere('user.status = :status', { status: UserStatus.ENABLED })
             .getOne();
     }
@@ -71,7 +71,7 @@ export class User extends BaseEntity {
     static findOneByToken(token: string): Promise<User> {
         Logger.log('Returning Query - User');
         return this.createQueryBuilder('user')
-            .where('user.token = :token', {token})
+            .where('user.token = :token', { token })
             .getOne();
     }
 
@@ -84,16 +84,24 @@ export class User extends BaseEntity {
     static getByEmail(email: string): Promise<User> {
         Logger.log('Returning Query - User');
         return this.createQueryBuilder('user')
-            .where('user.email = :email', {email})
+            .where('user.email = :email', { email })
             .getOne();
     }
 
     static findAdminById(id: number) {
         Logger.log('Returning Query - User');
         return this.createQueryBuilder('user')
-            .where('user.id = :id', {id})
+            .where('user.id = :id', { id })
             .andWhere('user.userType = :userType', { userType: UserTypeEnum.ADMIN })
             .andWhere('user.status = :status', { status: UserStatus.ENABLED })
+            .getOne();
+    }
+
+    static findByIdAndType(id: number, userType: UserTypeEnum) {
+        Logger.log('Returning Query - User - findByIdAndType');
+        return this.createQueryBuilder('user')
+            .where('user.id = :id', { id })
+            .andWhere('user.userType = :userType', { userType })
             .getOne();
     }
 }

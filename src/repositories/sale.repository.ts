@@ -19,4 +19,11 @@ export class SaleRepository extends Repository<Sale> {
         Logger.log('End Repository - SALE');
         return sales;
     }
+
+    async getSaleById(saleId: number): Promise<Sale> {
+        Logger.log('Start Repository - SALE - getSaleById');
+        const sale = await Sale.getSaleById(saleId);
+        Logger.log('End Repository - SALE - getSaleById');
+        return sale;
+    }
 }

@@ -1,9 +1,9 @@
 import moment from 'moment';
-import { Injectable, ConflictException, Logger, NotFoundException, InternalServerErrorException } from '@nestjs/common';
-import CreateSale, { SaleModel, CandyModel, CreateSaleResponse } from './interface/sale.interface';
+import { Injectable, ConflictException, Logger, NotFoundException, InternalServerErrorException, BadRequestException } from '@nestjs/common';
+import CreateSale, { SaleModel, CandyModel, CreateSaleResponse, GetSalesResponse } from './interface/sale.interface';
 import { UserRepository } from 'src/repositories/user.repository';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, mongo } from 'mongoose';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { UserModel } from 'src/users/interface/user.interface';
@@ -88,13 +88,13 @@ export class SalesService {
         };
     }
 
-    async getSales(adminId: number) {
+    async getSales(adminId: number): Promise<GetSalesResponse[]> {
         Logger.log('Service Start - SALE - getSales');
 
         const user = await this.userRepository.findAdminById(adminId);
         if (!user)
             throw new NotFoundException(`admin with id ${adminId} not exist or`);
-        
+
         const sales = await this.saleRepository.getSalesByAdminId(adminId);
         if (!sales.length)
             return [];
@@ -117,5 +117,26 @@ export class SalesService {
         }
         Logger.log('Service End - SALE - getSales');
         return responseSales;
+    }
+
+    async addCandysAndFinishedSale(saleId: number, candys?: CandyModel[], finished?: boolean): Promise<void> {
+        Logger.log('Service Start - SALE - addCandysAndFinisehdSale');
+
+        const sale = await this.saleRepository.getSaleById(saleId);
+        if (!sale)
+            throw new NotFoundException(`sale with id ${saleId} not found or finished`);
+
+        const mongoSale = await this.saleModel.findById(sale.mongoId)
+
+        if (candys.length) {
+            for (const candy of candys) {
+                mongoSale.candys.push(candy);
+            }
+        }
+
+        if (finished)
+            sale.status = SalesStatusEnum.CLOSED;
+        
+        Logger.log('Service End - SALE - addCandysAndFinisehdSale');
     }
 }

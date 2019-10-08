@@ -1,6 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { User } from 'src/entities/user.entity';
 import { Logger } from '@nestjs/common';
+import { UserTypeEnum } from 'src/common/enums/user-role.enum';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -46,5 +47,11 @@ export class UserRepository extends Repository<User> {
         Logger.log('Start Repository - USER');
         Logger.log('End Repository - USER');
         return User.findAdminById(id);
+    }
+    async findByIdAndType(id: number, userType: UserTypeEnum): Promise<User> {
+        Logger.log('Start Repository - USER - findByIdAndType');
+        const user = await User.findByIdAndType(id, userType);
+        Logger.log('End Repository - USER - findByIdAndType');
+        return user;
     }
 }

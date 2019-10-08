@@ -1,6 +1,6 @@
-import { Controller, Post, HttpCode, Body, BadRequestException, Get, Param } from '@nestjs/common';
+import { Controller, Post, HttpCode, Body, BadRequestException, Get, Param, Put } from '@nestjs/common';
 import { SalesService } from './sales.service';
-import CreateSale, { CreateSaleResponse } from './interface/sale.interface';
+import CreateSale, { CreateSaleResponse, GetSalesResponse, CandyModel } from './interface/sale.interface';
 
 @Controller('sales')
 export class SalesController {
@@ -19,9 +19,18 @@ export class SalesController {
 
     @Get(':id')
     @HttpCode(200)
-    async getSales(@Param('id') adminId: number) {
+    async getSales(@Param('id') adminId: number): Promise<GetSalesResponse[]> {
         if (!adminId) throw new BadRequestException('adminId is required');
         const sales = await this.salesService.getSales(adminId);
         return sales;
+    }
+
+    @Put(':id')
+    @HttpCode(204)
+    async updateSale(@Param('id') saleId: number, @Body() candys?: CandyModel[], finished?: boolean) {
+        if (!saleId) throw new BadRequestException(`saleId in pathParams ir required`);
+        if (!candys && !finished)
+            throw new BadRequestException(`Candys of finished need to be true`);
+        await this.salesService.addCandysAndFinishedSale(saleId, candys, finished);
     }
 }

@@ -48,4 +48,12 @@ export class Sale extends BaseEntity {
             
     }
 
+    static getSaleById(saleId: number): Promise<Sale> {
+        Logger.log('Returnig Query - SALE - getSaleById');
+        return this.createQueryBuilder('sale')
+            .where('sale.id = :saleId', {saleId})
+            .andWhere('sale.status IN (:status)', { status: [SalesStatusEnum.CREATED, SalesStatusEnum.IN_PROGRESS] })
+            .getOne();
+    }
+
 }

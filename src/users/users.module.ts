@@ -10,8 +10,8 @@ import { UserSchema } from 'src/entities/mongo/models/user.model';
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]), TypeOrmModule.forFeature([UserRepository]), Mailer],
-  providers: [UsersService, SendEmailMessage, NestUtils],
+  providers: [UsersService, SendEmailMessage, NestUtils, UserRepository],
   controllers: [UsersController],
-  exports: [UsersService, TypeOrmModule, Mailer, NestUtils, MongooseModule],
+  exports: [UsersService, TypeOrmModule, Mailer, NestUtils, MongooseModule, UserRepository],
 })
 export class UsersModule {}

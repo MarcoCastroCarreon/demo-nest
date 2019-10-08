@@ -13,3 +13,7 @@ export interface UserModel extends Document {
     mySqlId: number;
     userType: UserTypeEnum;
 }
+
+export interface UserLoginResponse {
+    access_token: string;
+}

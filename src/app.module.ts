@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TasksController } from './tasks/tasks.controller';
@@ -8,8 +8,6 @@ import { ConnectionModule } from './common/config';
 import { UsersModule } from './users/users.module';
 import { UsersController } from './users/users.controller';
 import { UsersService } from './users/users.service';
-import { AuthService } from './common/auth/auth.service';
-import { AuthModule } from './common/auth/auth.module';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Mailer, SendEmailMessage } from './common/mailer';
@@ -19,15 +17,15 @@ import { SalesModule } from './sales/sales.module';
 import { MongoModule } from './common/mongoConfig';
 import { MongooseModule } from '@nestjs/mongoose';
 import { NestUtils } from './common/utils';
+import { AuthenticationMiddleWare } from './common/auth/middleware/auth.middleware';
 
 @Module({
   imports: [
     TasksModule, 
     ConnectionModule, 
-    UsersModule, 
-    AuthModule, 
+    UsersModule,  
     PassportModule, 
-    TypeOrmModule, 
+    TypeOrmModule,
     Mailer, 
     SalesModule,
     MongoModule,
@@ -35,6 +33,13 @@ import { NestUtils } from './common/utils';
     NestUtils,
   ],
   controllers: [AppController, TasksController, UsersController, SalesController],
-  providers: [AppService, TasksService, UsersService, AuthService, SendEmailMessage, SalesService, NestUtils],
+  providers: [AppService, TasksService, UsersService, SendEmailMessage, SalesService, NestUtils],
 })
-export class AppModule {}
+export class AppModule implements NestModule { 
+    configure(consumer: MiddlewareConsumer) {
+      consumer
+        .apply(AuthenticationMiddleWare)
+        .forRoutes('/sales', '/users');
+    }
+    
+ }
