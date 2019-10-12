@@ -72,6 +72,7 @@ export class User extends BaseEntity {
         Logger.log('Returning Query - User');
         return this.createQueryBuilder('user')
             .where('user.token = :token', { token })
+            .andWhere('user.status NOT IN (:status)', { status: [UserStatus.DISABLED, UserStatus.ENABLED] })
             .getOne();
     }
 

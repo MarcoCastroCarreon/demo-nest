@@ -1,5 +1,6 @@
 import { Document, DocumentQuery, Query } from 'mongoose';
 import { UserTypeEnum } from 'src/common/enums/user-role.enum';
+import { UserStatus } from 'src/common/enums/user-status.enum';
 
 export interface UserInterface {
     id: number;
@@ -21,4 +22,11 @@ export interface UserLoginBody {
 
 export interface UserLoginReponse {
     access_token: string;
+}
+
+export interface UserGetAllResponse {
+    id: number;
+    name: string;
+    email: string;
+    status: UserStatus;
 }

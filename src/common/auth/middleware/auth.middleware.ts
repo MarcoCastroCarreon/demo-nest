@@ -21,8 +21,10 @@ export class AuthenticationMiddleWare implements NestMiddleware {
         Logger.log(`Middleware Start - Authentication`);
         if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
             const token = req.headers.authorization.split(' ')[1];
+            Logger.log(token);
             jwt.verify(token, secret, (err, decode) => {
                 if (err) {
+                    Logger.log(err);
                     throw new UnauthorizedException('Token is not valid');
                 }
                 Logger.log(decode);

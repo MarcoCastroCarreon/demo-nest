@@ -2,11 +2,11 @@ import uuid = require('uuid');
 import moment from 'moment';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { Injectable, ConflictException, NotFoundException, Logger } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException, Logger, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from 'src/repositories/user.repository';
 import { UserDTO } from './dto/user.dto';
-import { UserInterface, UserModel, UserLoginReponse } from './interface/user.interface';
+import { UserInterface, UserModel, UserLoginReponse, UserGetAllResponse } from './interface/user.interface';
 import { User } from 'src/entities/user.entity';
 import { UserStatus } from 'src/common/enums/user-status.enum';
 import { SendEmailMessage } from 'src/common/mailer';
@@ -19,6 +19,7 @@ import { config } from 'dotenv';
 config();
 
 const jwtSecret = process.env.JWT_SECRET;
+const salts = process.env.PW_SALTS;
 
 @Injectable()
 export class UsersService {
@@ -41,9 +42,9 @@ export class UsersService {
         newUser.token = uuid.v4();
         newUser.creationDate = moment(moment.now(), 'x').toDate();
 
-        const salts = 10;
-        bcrypt.genSalt(salts, (err, salt) => {
+        bcrypt.genSalt(+salts, (err, salt) => {
             bcrypt.hash(user.password, salt, (error, hash) => {
+                if (error) throw new InternalServerErrorException(`Error encrypting password`);
                 newUser.password = hash;
             });
         });
@@ -74,16 +75,14 @@ export class UsersService {
         return await this.userRepository.findByToken(token);
     }
 
-    async findAll(): Promise<UserInterface[]> {
+    async findAll(): Promise<UserGetAllResponse[]> {
         const allUsers = await this.userRepository.findAll();
 
         const all = allUsers.map(user => ({
             id: user.id,
             name: user.name,
             email: user.email,
-            password: user.password,
             status: user.status,
-            token: user.token ? user.token : null,
         }));
         return all;
     }
@@ -102,10 +101,10 @@ export class UsersService {
 
     async confirmUser(token: string): Promise<void> {
         const user = await this.userRepository.findByToken(token);
-        if (!user || user && user.status === UserStatus.DISABLED)
-            throw new ConflictException(`user with ${JSON.stringify(token)} not found or disabled`);
+        if (!user)
+            throw new ConflictException(`user with token ${token} not found, DISABLED or already ENABLED`);
         user.status = UserStatus.ENABLED;
-        await this.userRepository.save(user);
+        await this.userRepository.saveUser(user);
     }
 
     async changePassword(id: number, data: ChangePassword): Promise<void> {
@@ -116,7 +115,7 @@ export class UsersService {
             throw new ConflictException(`oldPassword and userPassword not equal`);
         await this.sendEmailService.sendChangePasswordEmail(user.email, user.name);
         user.password = data.password;
-        await user.save();
+        await this.userRepository.saveUser(user);
     }
 
     async findByEmailAndLogin(email: string, password: string): Promise<UserLoginReponse> {

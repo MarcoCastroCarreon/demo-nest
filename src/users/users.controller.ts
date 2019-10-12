@@ -1,8 +1,7 @@
-import { Controller, Get, HttpCode, Post, Body, UseGuards, Param, Put, Delete, BadRequestException, Logger, Request, Header } from '@nestjs/common';
+import { Controller, Get, HttpCode, Post, Body, Param, Put, Delete, BadRequestException, Logger, Headers } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UserInterface, UserLoginBody, UserLoginReponse } from './interface/user.interface';
+import { UserInterface, UserLoginBody, UserLoginReponse, UserGetAllResponse } from './interface/user.interface';
 import { UserDTO } from './dto/user.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { filter } from 'src/common/enums/user-status.enum';
 import { ChangePassword } from './interface/change-password.interface';
 import { parseRole } from 'src/common/enums/user-role.enum';
@@ -43,9 +42,8 @@ export class UsersController {
     }
 
     @Get()
-    @UseGuards(AuthGuard('bearer'))
     @HttpCode(200)
-    getAll(): Promise<UserInterface[]> {
+    getAll(): Promise<UserGetAllResponse[]> {
         const users = this.userService.findAll();
         return users;
     }
@@ -60,14 +58,16 @@ export class UsersController {
     @Put(':id')
     @HttpCode(204)
     async updateUserStatus(@Param('id') id: number, @Body() status: string): Promise<void> {
+        if (!id || isNaN(id))
+            throw new BadRequestException(`id ${id} does not have a valid format`);
         if (!status || !filter(status))
             throw new BadRequestException(`status ${status} not exist`);
         await this.userService.changeUserStatus(id, filter(status));
     }
 
-    @Put('/confirm/:token')
+    @Put('confirm/token')
     @HttpCode(204)
-    async confirmUser(@Param('token') token: string): Promise<void> {
+    async confirmUser(@Headers('token') token: string): Promise<void> {
         Logger.log(token);
         await this.userService.confirmUser(token);
     }
