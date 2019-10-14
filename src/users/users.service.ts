@@ -87,11 +87,11 @@ export class UsersService {
         return all;
     }
 
-    async changeUserStatus(id: number, status: UserStatus): Promise<UserInterface> {
+    async changeUserStatus(id: number, status: UserStatus): Promise<void> {
         const user = await this.userRepository.findById(id);
+        if (!user) throw new NotFoundException(`User with id ${id} not found`);
         user.status = status;
         await this.userRepository.saveUser(user);
-        return user;
     }
 
     async deleteUser(id: number): Promise<UserInterface> {

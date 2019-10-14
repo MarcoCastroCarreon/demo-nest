@@ -19,11 +19,6 @@ export class UsersModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthenticationMiddleWare)
-      .exclude(
-        {
-          path: 'users/login', method: RequestMethod.POST,
-        },
-      )
-      .forRoutes(UsersController);
+      .forRoutes({path: '/users/:id', method: RequestMethod.DELETE}, { path: '/users', method: RequestMethod.POST }, { path: '/users/:id', method: RequestMethod.PUT });
   }
 }

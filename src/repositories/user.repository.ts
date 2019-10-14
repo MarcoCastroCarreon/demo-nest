@@ -54,4 +54,11 @@ export class UserRepository extends Repository<User> {
         Logger.log('End Repository - USER - findByIdAndType');
         return user;
     }
+    async findAdminByEmail(email: string): Promise<User> {
+        Logger.log('Start Repository - USER - findAdminByEmail');
+        const user = await User.findAdminByEmail(email);
+        Logger.log('End Repository - USER - findAdminByEmail');
+        return user;
+
+    }
 }

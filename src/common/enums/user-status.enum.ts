@@ -12,7 +12,5 @@ export const filter = (value: string) => {
             return UserStatus.ENABLED;
         case UserStatus.DISABLED:
             return UserStatus.DISABLED;
-        case UserStatus.PENDING_ACCOUNT:
-            return UserStatus.PENDING_ACCOUNT;
         }
 };

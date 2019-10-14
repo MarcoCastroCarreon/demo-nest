@@ -15,6 +15,17 @@ import { MongoModule } from './common/mongoConfig';
 import { MongooseModule } from '@nestjs/mongoose';
 import { NestUtils } from './common/utils';
 import { AuthenticationMiddleWare } from './common/auth/middleware/auth.middleware';
+import { AuthModule } from './common/auth/auth.module';
+import { AuthController } from './common/auth/auth.controller';
+import { AuthService } from './common/auth/auth.service';
+import { JwtService, JwtModule } from '@nestjs/jwt';
+import { JwtStrategy } from './common/auth/jwt-strategy';
+import { LocalStrategy } from './common/auth/loca.strategy';
+import { config } from 'dotenv';
+
+config();
+
+const secret = process.env.JWT_SECRET;
 
 @Module({
   imports: [ 
@@ -27,8 +38,10 @@ import { AuthenticationMiddleWare } from './common/auth/middleware/auth.middlewa
     MongoModule,
     MongooseModule,
     NestUtils,
+    AuthModule,
+    PassportModule,
   ],
-  controllers: [AppController, UsersController, SalesController],
-  providers: [AppService, UsersService, SendEmailMessage, SalesService, NestUtils],
+  controllers: [AppController, UsersController, SalesController, AuthController],
+  providers: [AppService, UsersService, SendEmailMessage, SalesService, NestUtils, AuthService, LocalStrategy],
 })
 export class AppModule { }

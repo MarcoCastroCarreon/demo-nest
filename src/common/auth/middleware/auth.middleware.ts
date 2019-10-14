@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 import { Injectable, NestMiddleware, Logger, UnauthorizedException } from '@nestjs/common';
 import { Request, Response, ErrorRequestHandler } from 'express';
 import { config } from 'dotenv';
@@ -21,7 +22,6 @@ export class AuthenticationMiddleWare implements NestMiddleware {
         Logger.log(`Middleware Start - Authentication`);
         if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
             const token = req.headers.authorization.split(' ')[1];
-            Logger.log(token);
             jwt.verify(token, secret, (err, decode) => {
                 if (err) {
                     Logger.log(err);
@@ -30,9 +30,14 @@ export class AuthenticationMiddleWare implements NestMiddleware {
                 Logger.log(decode);
                 const code = JSON.stringify(decode);
                 const info = JSON.parse(code);
-                const user = this.userRepository.getByEmail(info.email);
-                if (!user)
-                    throw new UnauthorizedException('Token is not valid');
+                const user = this.userRepository.findAdminByEmail(info.email)
+                    .then(u => {
+                        if (!u) throw new UnauthorizedException(`Token is not valid`);
+                        bcrypt.compare(info.password, u.password, (notSame, same) => {
+                            if (notSame) throw new UnauthorizedException(`Token is not valid`);
+                            Logger.log(`Authentication Succesful`);
+                        });
+                    });
             });
             Logger.log('Middleware End - Authentication');
             next();

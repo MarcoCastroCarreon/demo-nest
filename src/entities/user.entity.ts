@@ -89,7 +89,7 @@ export class User extends BaseEntity {
             .getOne();
     }
 
-    static findAdminById(id: number) {
+    static findAdminById(id: number): Promise<User> {
         Logger.log('Returning Query - User');
         return this.createQueryBuilder('user')
             .where('user.id = :id', { id })
@@ -98,11 +98,18 @@ export class User extends BaseEntity {
             .getOne();
     }
 
-    static findByIdAndType(id: number, userType: UserTypeEnum) {
+    static findByIdAndType(id: number, userType: UserTypeEnum): Promise<User> {
         Logger.log('Returning Query - User - findByIdAndType');
         return this.createQueryBuilder('user')
             .where('user.id = :id', { id })
             .andWhere('user.userType = :userType', { userType })
+            .getOne();
+    }
+    static findAdminByEmail(email: string): Promise<User> {
+        Logger.log('Returning Query - User - findAdminByEmail');
+        return this.createQueryBuilder('user')
+            .where('user.email = :email', {email})
+            .andWhere('user.userType = :userType', { userType: UserTypeEnum.ADMIN })
             .getOne();
     }
 }

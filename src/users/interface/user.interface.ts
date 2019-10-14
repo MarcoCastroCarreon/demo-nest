@@ -30,3 +30,7 @@ export interface UserGetAllResponse {
     email: string;
     status: UserStatus;
 }
+
+export interface UpdateUserStatus {
+    status: UserStatus;
+}
