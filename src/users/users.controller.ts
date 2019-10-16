@@ -7,6 +7,11 @@ import { ChangePassword } from './interface/change-password.interface';
 import { parseRole } from 'src/common/enums/user-role.enum';
 import { NestUtils } from 'src/common/utils';
 import { AuthGuard } from '@nestjs/passport';
+import { config } from 'dotenv';
+
+config();
+
+const AUTH_GUARD_TYPE = process.env.AUTH_GUARD_TYPE;
 
 @Controller('users')
 export class UsersController {
@@ -17,7 +22,7 @@ export class UsersController {
 
     @Post()
     @HttpCode(201)
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard(AUTH_GUARD_TYPE))
     async create(@Body() user: UserDTO): Promise<UserInterface> {
         const { userType, name } = user;
         Logger.log(user);
@@ -36,7 +41,7 @@ export class UsersController {
 
     @Get()
     @HttpCode(200)
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard(AUTH_GUARD_TYPE))
     getAll(): Promise<UserGetAllResponse[]> {
         const users = this.userService.findAll();
         return users;
@@ -44,7 +49,7 @@ export class UsersController {
 
     @Get(':id')
     @HttpCode(200)
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard(AUTH_GUARD_TYPE))
     getUserById(@Param('id') id: number) {
         const user = this.userService.findById(id);
         return user;
@@ -52,7 +57,7 @@ export class UsersController {
 
     @Put(':id')
     @HttpCode(204)
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard(AUTH_GUARD_TYPE))
     async updateUserStatus(@Param('id') id: number, @Body() req: UpdateUserStatus): Promise<void> {
         if (!id || isNaN(id))
             throw new BadRequestException(`id ${id} does not have a valid format`);
@@ -78,7 +83,7 @@ export class UsersController {
 
     @Delete(':id')
     @HttpCode(204)
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard(AUTH_GUARD_TYPE))
     async deleteUser(@Param('id') id: number): Promise<void> {
         await this.userService.deleteUser(id);
     }

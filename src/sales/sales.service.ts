@@ -126,7 +126,7 @@ export class SalesService {
         if (!sale)
             throw new NotFoundException(`sale with id ${saleId} not found or finished`);
 
-        const mongoSale = await this.saleModel.findById(sale.mongoId)
+        const mongoSale = await this.saleModel.findById(sale.mongoId);
 
         if (candys.length) {
             for (const candy of candys) {
@@ -136,7 +136,7 @@ export class SalesService {
 
         if (finished)
             sale.status = SalesStatusEnum.CLOSED;
-        
+
         Logger.log('Service End - SALE - addCandysAndFinisehdSale');
     }
 }

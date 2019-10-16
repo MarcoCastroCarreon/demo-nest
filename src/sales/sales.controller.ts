@@ -1,6 +1,11 @@
-import { Controller, Post, HttpCode, Body, BadRequestException, Get, Param, Put } from '@nestjs/common';
+import { Controller, Post, HttpCode, Body, BadRequestException, Get, Param, Put, UseGuards } from '@nestjs/common';
 import { SalesService } from './sales.service';
 import CreateSale, { CreateSaleResponse, GetSalesResponse, CandyModel } from './interface/sale.interface';
+import { AuthGuard } from '@nestjs/passport';
+import { config } from 'dotenv';
+
+config();
+const AUTH_GUARD_TYPE = process.env.AUTH_GUARD_TYPE;
 
 @Controller('sales')
 export class SalesController {
@@ -9,6 +14,7 @@ export class SalesController {
 
     @Post()
     @HttpCode(201)
+    @UseGuards(AuthGuard(AUTH_GUARD_TYPE))
     async createSale(@Body() sale: CreateSale): Promise<CreateSaleResponse> {
         if (!sale.workerId || sale.workerId && isNaN(sale.workerId)) throw new BadRequestException(`workerId is required`);
         if (!sale.adminId || sale.adminId && isNaN(sale.adminId)) throw new BadRequestException(`adminId is required`);
@@ -19,7 +25,8 @@ export class SalesController {
 
     @Get(':id')
     @HttpCode(200)
-    async getSales(@Param('id') adminId: number): Promise<GetSalesResponse[]> {
+    @UseGuards(AuthGuard(AUTH_GUARD_TYPE))
+    async getAdminSales(@Param('id') adminId: number): Promise<GetSalesResponse[]> {
         if (!adminId) throw new BadRequestException('adminId is required');
         const sales = await this.salesService.getSales(adminId);
         return sales;
@@ -27,6 +34,7 @@ export class SalesController {
 
     @Put(':id')
     @HttpCode(204)
+    @UseGuards(AuthGuard(AUTH_GUARD_TYPE))
     async updateSale(@Param('id') saleId: number, @Body() candys?: CandyModel[], finished?: boolean) {
         if (!saleId) throw new BadRequestException(`saleId in pathParams ir required`);
         if (!candys && !finished)

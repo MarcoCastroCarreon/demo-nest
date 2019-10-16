@@ -15,6 +15,7 @@ import { AuthenticationMiddleWare } from 'src/common/auth/middleware/auth.middle
   controllers: [UsersController],
   exports: [UsersService, TypeOrmModule, Mailer, NestUtils, MongooseModule, UserRepository],
 })
+
 export class UsersModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
