@@ -35,6 +35,7 @@
                 <constraints nullable="false" />
             </column>
 		</createTable>
+
 	</changeSet>
 
 	<changeSet author="marco-castro" id="changelog-0.0.4">
