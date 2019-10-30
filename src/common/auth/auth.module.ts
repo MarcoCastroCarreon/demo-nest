@@ -11,10 +11,10 @@ import { JwtStrategy } from './jwt-strategy';
 config();
 
 const secret = process.env.JWT_SECRET;
- 
+
 @Module({
   imports: [
-    UsersModule, 
+    UsersModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret,
@@ -25,4 +25,4 @@ const secret = process.env.JWT_SECRET;
   providers: [AuthService, LocalStrategy, JwtStrategy],
   exports: [AuthService, JwtModule],
 })
-export class AuthModule {}
+export class AuthModule { }

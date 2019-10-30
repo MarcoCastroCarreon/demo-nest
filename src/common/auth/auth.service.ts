@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/entities/user.entity';
-import { UserRepository } from 'src/repositories/user.repository';
+import { User } from '../../entities/user.entity';
+import { UserRepository } from '../../repositories/user.repository';
 import { JwtPayload } from './interfaces/jwt-payload';
-import { UserLoginBody } from 'src/users/interface/user.interface';
+import { UserLoginBody } from '../../users/interface/user.interface';
 import jwt from 'jsonwebtoken';
 import { config } from 'dotenv';
 
@@ -14,9 +14,9 @@ const secret = process.env.JWT_SECRET;
 @Injectable()
 export class AuthService {
     constructor(
-        @InjectRepository(User) 
+        @InjectRepository(User)
         private userRepository: UserRepository,
-        ) { }
+    ) { }
 
     async validateUser(payload: JwtPayload) {
         const user = await this.userRepository.getByEmail(payload.email);
