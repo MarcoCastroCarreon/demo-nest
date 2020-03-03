@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { Injectable, ConflictException, Logger, NotFoundException, InternalServerErrorException, BadRequestException } from '@nestjs/common';
-import CreateSale, { SaleModel, CandyModel, CreateSaleResponse, GetSalesResponse } from './interface/sale.interface';
+import CreateSale, { SaleModel, CandyModel, CreateSaleResponse, GetSalesResponse, GetSaleResponse } from './interface/sale.interface';
 import { UserRepository } from 'src/repositories/user.repository';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, mongo } from 'mongoose';
@@ -26,6 +26,13 @@ export class SalesService {
         private saleRepository: SaleRepository,
     ) { }
 
+
+    /**
+     * Creates a new sale in the MySQL database and a registry in the Mongo database
+     * @author mcastro
+     * @param sale the sale you want to create
+     * @returns {Object} CreatedSale 
+     */
     async createSale(sale: CreateSale): Promise<CreateSaleResponse> {
         Logger.log('Service Start - SALE - createSale');
         const user = await this.userRepository.findById(sale.workerId);
@@ -45,7 +52,7 @@ export class SalesService {
         admin.userType = adminUser.userType;
 
         const candys: CandyModel[] = [];
-        if (sale.sale) {
+        if (sale.sale && sale.sale.length) {
             for (const candy of sale.sale) {
                 const cdy = new this.candyModel();
                 cdy.name = candy.name;
@@ -75,7 +82,7 @@ export class SalesService {
         } catch (errors) {
             Logger.warn(errors);
             await this.saleRepository.deleteSale(saleSQL);
-            await this.saleModel.remove(newSale);
+            this.saleModel.remove(newSale);
             throw new InternalServerErrorException(`${errors}`);
         }
 
@@ -88,6 +95,13 @@ export class SalesService {
         };
     }
 
+
+    /**
+     * Get a list of sales of the current user
+     * @author mcastro
+     * @param adminId the id of the admin you want to get the sales
+     * @returns {Promise} Sales[]
+     */
     async getSales(adminId: number): Promise<GetSalesResponse[]> {
         Logger.log('Service Start - SALE - getSales');
 
@@ -110,15 +124,23 @@ export class SalesService {
         }));
 
         for (const sale of responseSales) {
-            const candys = await this.saleModel.findById(sale.mongoId);
+            const candys = this.saleModel.findById(sale.mongoId);
             Logger.log(candys);
-            sale.candys = candys.candys;
+            sale.candys = (await candys).candys;
             delete sale.mongoId;
         }
         Logger.log('Service End - SALE - getSales');
         return responseSales;
     }
 
+    /**
+     * update the sale with the given id, adding candys and finishing the sale or just finishing the sale
+     * @author mcastro
+     * @param saleId the id of the sale you want to update
+     * @param candys the list of candys to add
+     * @param finished this param is use just in case to finish the sale and changes the sale status
+     * @returns {Promise} void
+     */
     async addCandysAndFinishedSale(saleId: number, candys?: CandyModel[], finished?: boolean): Promise<void> {
         Logger.log('Service Start - SALE - addCandysAndFinisehdSale');
 
@@ -138,5 +160,36 @@ export class SalesService {
             sale.status = SalesStatusEnum.CLOSED;
 
         Logger.log('Service End - SALE - addCandysAndFinisehdSale');
+    }
+
+    /**
+     * @author mcastro
+     * @param saleId the id of the sale you want to get
+     * @returns {Promise} Sale
+     */
+    async getSale(saleId: number): Promise<any> {
+        Logger.log('Service Start - SALE - getSale');
+
+        try {
+            const sale = await this.saleRepository.getSaleById(saleId);
+            if (!sale)
+                throw new NotFoundException(`sale with id ${saleId} not found`);
+
+            const response: GetSaleResponse = {
+                id: sale.id,
+                status: sale.status,
+                worker: sale.worker.name,
+                admin: sale.admin.name,
+                candys: await this.saleModel.findById(sale.mongoId).then(mongoSale => mongoSale.candys.map(candy => candy.name).filter(item => item)),
+                creationDate: sale.creationDate,
+                lastUpdatedDate: sale.lastUpdateDate
+            }
+
+            Logger.log('Service End - SALE - getSale');
+            return response;
+        } catch (error) {
+            Logger.log('Service Error - SALE ==>', error);
+            throw new InternalServerErrorException('Service Failed');
+        }
     }
 }

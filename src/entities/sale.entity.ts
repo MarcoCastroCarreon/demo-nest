@@ -17,7 +17,7 @@ export class Sale extends BaseEntity {
     @JoinColumn({ name: 'ADMIN_ID' })
     admin: User;
 
-    @Column({ name: 'SALE_MONGO_ID'})
+    @Column({ name: 'SALE_MONGO_ID' })
     mongoId: string;
 
     @Column({ name: 'CREATION_DATE' })
@@ -37,21 +37,21 @@ export class Sale extends BaseEntity {
 
     @Column({ name: 'FINISHED_DATE' })
     finishedDate: Date;
-    
+
     static getSalesByAdminId(adminId: number) {
         Logger.log('Returning Query - SALE');
         return this.createQueryBuilder('sale')
             .leftJoinAndSelect('sale.admin', 'admin')
             .leftJoinAndSelect('sale.worker', 'worker')
-            .where('admin.id = :adminId', {adminId})
+            .where('admin.id = :adminId', { adminId })
             .getMany();
-            
+
     }
 
     static getSaleById(saleId: number): Promise<Sale> {
         Logger.log('Returnig Query - SALE - getSaleById');
         return this.createQueryBuilder('sale')
-            .where('sale.id = :saleId', {saleId})
+            .where('sale.id = :saleId', { saleId })
             .andWhere('sale.status IN (:status)', { status: [SalesStatusEnum.CREATED, SalesStatusEnum.IN_PROGRESS] })
             .getOne();
     }

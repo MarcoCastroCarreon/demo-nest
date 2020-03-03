@@ -10,7 +10,7 @@ const AUTH_GUARD_TYPE = process.env.AUTH_GUARD_TYPE;
 @Controller('sales')
 export class SalesController {
 
-    constructor(private salesService: SalesService) {}
+    constructor(private salesService: SalesService) { }
 
     @Post()
     @HttpCode(201)
@@ -41,4 +41,14 @@ export class SalesController {
             throw new BadRequestException(`Candys of finished need to be true`);
         await this.salesService.addCandysAndFinishedSale(saleId, candys, finished);
     }
+
+    @Get(':id')
+    @HttpCode(200)
+    @UseGuards(AuthGuard(AUTH_GUARD_TYPE))
+    async getSale(@Param('id') saleId: number): Promise<any> {
+        if (!saleId) throw new BadRequestException(`sale id in params is required`);
+        const response = await this.salesService.getSale(saleId);
+        return response;
+    }
+
 }

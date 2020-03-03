@@ -35,3 +35,13 @@ export interface GetSalesResponse {
     candys: any[];
     finishedDate: Date;
 }
+
+export interface GetSaleResponse {
+    id: number;
+    status: SalesStatusEnum;
+    admin: string;
+    worker: string;
+    creationDate: Date;
+    candys: CandyModel[] | string[];
+    lastUpdatedDate: Date;
+}
