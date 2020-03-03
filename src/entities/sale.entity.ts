@@ -56,4 +56,12 @@ export class Sale extends BaseEntity {
             .getOne();
     }
 
+    static getSaleWithExtraInfo(saleId: number): Promise<Sale> {
+        Logger.log('Returning Query - SALE');
+        return this.createQueryBuilder('sale')
+            .leftJoinAndSelect('sale.admin', 'admin')
+            .leftJoinAndSelect('sale.worker', 'worker')
+            .andWhere('sale.id = :saleId', { saleId })
+            .getOne();
+    }
 }
