@@ -8,7 +8,7 @@ const password = process.env.EMAIL_PASSWORD;
 export const Mailer = MailerModule.forRoot({
   transport: `smtps://${user}:${password}@smtp.gmail.com`,
   defaults: {
-    from: 'Mi App <mymmarck1997@gmail.com>',
+    from: 'Mi App <mcastrodevelopment@gmail.com>',
   },
   template: {
     adapter: new HandlebarsAdapter(),

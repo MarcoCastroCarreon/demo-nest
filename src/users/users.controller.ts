@@ -22,7 +22,7 @@ export class UsersController {
 
     @Post()
     @HttpCode(201)
-    @UseGuards(AuthGuard(AUTH_GUARD_TYPE))
+    // @UseGuards(AuthGuard(AUTH_GUARD_TYPE))
     async create(@Body() user: UserDTO): Promise<UserInterface> {
         const { userType, name } = user;
         Logger.log(user);
